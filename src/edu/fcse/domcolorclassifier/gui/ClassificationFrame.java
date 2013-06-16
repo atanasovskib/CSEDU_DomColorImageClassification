@@ -4,14 +4,7 @@
  */
 package edu.fcse.domcolorclassifier.gui;
 
-import edu.fcse.domcolorclassifier.gui.custcomponents.ImagePanel;
-import java.awt.Graphics;
-import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
-import javax.imageio.ImageIO;
-import javax.swing.ImageIcon;
-import javax.swing.JLabel;
 
 /**
  *
@@ -39,9 +32,12 @@ public class ClassificationFrame extends javax.swing.JFrame {
 
         jLabel1 = new javax.swing.JLabel();
         datasetScrollPane = new javax.swing.JScrollPane();
-        jList1 = new javax.swing.JList();
+        datasetList = new javax.swing.JList();
         jTabbedPane1 = new javax.swing.JTabbedPane();
         textRezPanel = new javax.swing.JPanel();
+        showAllButton = new javax.swing.JButton();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        rezTextArea = new javax.swing.JTextArea();
         visualRezPanel = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
 
@@ -51,22 +47,38 @@ public class ClassificationFrame extends javax.swing.JFrame {
         jLabel1.setLabelFor(datasetScrollPane);
         jLabel1.setText("Data set");
 
-        jList1.setModel(new javax.swing.AbstractListModel() {
-            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
-            public int getSize() { return strings.length; }
-            public Object getElementAt(int i) { return strings[i]; }
-        });
-        datasetScrollPane.setViewportView(jList1);
+        datasetList.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        datasetScrollPane.setViewportView(datasetList);
+
+        showAllButton.setText("Show all");
+
+        rezTextArea.setEditable(false);
+        rezTextArea.setColumns(20);
+        rezTextArea.setLineWrap(true);
+        rezTextArea.setRows(5);
+        jScrollPane1.setViewportView(rezTextArea);
 
         javax.swing.GroupLayout textRezPanelLayout = new javax.swing.GroupLayout(textRezPanel);
         textRezPanel.setLayout(textRezPanelLayout);
         textRezPanelLayout.setHorizontalGroup(
             textRezPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 496, Short.MAX_VALUE)
+            .addGroup(textRezPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(textRezPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 476, Short.MAX_VALUE)
+                    .addGroup(textRezPanelLayout.createSequentialGroup()
+                        .addComponent(showAllButton)
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addContainerGap())
         );
         textRezPanelLayout.setVerticalGroup(
             textRezPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 351, Short.MAX_VALUE)
+            .addGroup(textRezPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(showAllButton)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 300, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         jTabbedPane1.addTab("Textual results", textRezPanel);
@@ -122,11 +134,14 @@ public class ClassificationFrame extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JList datasetList;
     private javax.swing.JScrollPane datasetScrollPane;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
-    private javax.swing.JList jList1;
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTabbedPane jTabbedPane1;
+    private javax.swing.JTextArea rezTextArea;
+    private javax.swing.JButton showAllButton;
     private javax.swing.JPanel textRezPanel;
     private javax.swing.JPanel visualRezPanel;
     // End of variables declaration//GEN-END:variables

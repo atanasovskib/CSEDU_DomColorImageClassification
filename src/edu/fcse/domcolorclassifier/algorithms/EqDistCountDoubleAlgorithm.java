@@ -1,5 +1,6 @@
 package edu.fcse.domcolorclassifier.algorithms;
 
+import edu.fcse.domcolorclassifier.ClassificationResult;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -10,6 +11,9 @@ import edu.fcse.domcolorclassifier.MethodToApply;
 import edu.fcse.domcolorclassifier.colorutils.CustColor;
 import edu.fcse.domcolorclassifier.functions.distance.DistanceFunction;
 import edu.fcse.domcolorclassifier.functions.weight.WeightFunction;
+import java.io.File;
+import java.io.IOException;
+import javax.imageio.ImageIO;
 
 /**
  * Equal Distance Count Double Algorithm. This algorithm differs from the Basic
@@ -27,12 +31,9 @@ import edu.fcse.domcolorclassifier.functions.weight.WeightFunction;
 public class EqDistCountDoubleAlgorithm implements AlgorithmToApply {
 
 	@Override
-	public String classifyImage(BufferedImage imageToClassify,
-			MethodToApply method, List<CustColor> gravityCenters,
-			boolean fixedValue) {
-		if (imageToClassify == null) {
-			return "";
-		}
+	public ClassificationResult classifyImage(File fileToClassify,
+			MethodToApply method, List<CustColor> gravityCenters) throws IOException {
+		BufferedImage imageToClassify=ImageIO.read(fileToClassify);
 		HashMap<CustColor, Double> colorAppearance = new HashMap<>();
 		for (CustColor cc : gravityCenters) {
 			colorAppearance.put(cc, 0.0);
@@ -45,7 +46,7 @@ public class EqDistCountDoubleAlgorithm implements AlgorithmToApply {
 		float[][][] pixelsD = method.convertToColorSpace(pixels);
 		int width = imageToClassify.getWidth();
 		int height = imageToClassify.getHeight();
-		List<CustColor> minimums = new ArrayList<CustColor>(
+		List<CustColor> minimums = new ArrayList<>(
 				gravityCenters.size());
 		for (int i = 0; i < height; i++) {
 			for (int j = 0; j < width; j++) {
@@ -68,7 +69,7 @@ public class EqDistCountDoubleAlgorithm implements AlgorithmToApply {
 				}
 				double weight = weiF.getWeight(i, j, height / 2, width / 2);
 				double R;
-				if (fixedValue) {
+				if (method.getFixedValue()) {
 					R = 1;
 				} else {
 					R = 1 / minDistance;
@@ -91,7 +92,8 @@ public class EqDistCountDoubleAlgorithm implements AlgorithmToApply {
 				maxAppearence = colorAppearance.get(cc);
 			}
 		}
-		return max.getName();
+		ClassificationResult result = new ClassificationResult(fileToClassify.getAbsolutePath(), max, colorAppearance, width, height);
+                return result;
 	}
 
 }
