@@ -15,7 +15,7 @@ public class InitFrame extends javax.swing.JFrame {
      */
     public InitFrame() {
         initComponents();
-
+        
     }
 
     /**
@@ -133,6 +133,11 @@ public class InitFrame extends javax.swing.JFrame {
         useFixedValCheckBox.setText("Use fixed value addition");
 
         jButton2.setText("Classify");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
 
         autoStartCheckBox.setText("Start automaticly");
 
@@ -262,15 +267,15 @@ public class InitFrame extends javax.swing.JFrame {
         int returnVal = fileChooser.showOpenDialog(this);
         if (returnVal == JFileChooser.APPROVE_OPTION) {
             chosenInitFolderTextField.setText(fileChooser.getSelectedFile().getAbsolutePath());
-
+            
         }
     }//GEN-LAST:event_cChooseInitFolderButtonActionPerformed
-
+    
     private void algorithmComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_algorithmComboBoxActionPerformed
         String selection = (String) algorithmComboBox.getSelectedItem();
         //Basic Algorithm, Equal Distance Count Double, Add To Multiple Centers
         if (selection.equals("Basic Algorithm")) {
-
+            
             useFixedValCheckBox.setEnabled(true);
         } else if (selection.equals("Equal Distance Count Double")) {
             useFixedValCheckBox.setEnabled(true);
@@ -278,6 +283,11 @@ public class InitFrame extends javax.swing.JFrame {
             useFixedValCheckBox.setEnabled(false);
         }
     }//GEN-LAST:event_algorithmComboBoxActionPerformed
+    
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        ClassificationFrame cf = new ClassificationFrame();
+        cf.setVisible(true);
+    }//GEN-LAST:event_jButton2ActionPerformed
 
     /**
      * @param args the command line arguments
