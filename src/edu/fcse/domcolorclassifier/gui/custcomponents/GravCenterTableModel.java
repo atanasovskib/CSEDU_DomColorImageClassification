@@ -8,13 +8,13 @@ public class GravCenterTableModel extends AbstractTableModel {
     private String[] columnNames;
     private Object[][] data;
 
-    public GravCenterTableModel(Map<String, Float[]> map) {
+    public GravCenterTableModel(Map<String, float[]> map) {
         columnNames = new String[]{"Color name", "Red", "Green", "Blue"};
         data = new Object[map.size()][4];
         int i = 0;
         for (String s : map.keySet()) {
             data[i][0] = s;
-            Float[] cl = map.get(s);
+            float[] cl = map.get(s);
 
             data[i][1] = cl[0];
             data[i][2] = cl[1];

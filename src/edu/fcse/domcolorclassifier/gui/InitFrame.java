@@ -1,9 +1,30 @@
 package edu.fcse.domcolorclassifier.gui;
 
+import edu.fcse.domcolorclassifier.MethodToApply;
+import edu.fcse.domcolorclassifier.algorithms.AddToMultipleCentersAlgorithm;
+import edu.fcse.domcolorclassifier.algorithms.AddToMultipleCentersMaxDistAlgorithm;
+import edu.fcse.domcolorclassifier.algorithms.AlgorithmToApply;
+import edu.fcse.domcolorclassifier.algorithms.BasicAlgorithm;
+import edu.fcse.domcolorclassifier.algorithms.BasicWithDiscardDistanceAlgorithm;
+import edu.fcse.domcolorclassifier.algorithms.EqDistCountDoubleAlgorithm;
+import edu.fcse.domcolorclassifier.colorutils.CustColor;
+import edu.fcse.domcolorclassifier.functions.distance.DistanceFunction;
+import edu.fcse.domcolorclassifier.functions.distance.EuclideanDistanceFunction;
+import edu.fcse.domcolorclassifier.functions.smooting.AVGSmoothingFunction;
+import edu.fcse.domcolorclassifier.functions.smooting.MINSmoothingFunction;
+import edu.fcse.domcolorclassifier.functions.smooting.SmoothingFunction;
+import edu.fcse.domcolorclassifier.functions.weight.ExpWeightFunction;
+import edu.fcse.domcolorclassifier.functions.weight.ReciWeightFunction;
+import edu.fcse.domcolorclassifier.functions.weight.WeightFunction;
 import edu.fcse.domcolorclassifier.gui.custcomponents.GravCenterTableModel;
-import java.awt.Component;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JComponent;
 import javax.swing.JFileChooser;
 
@@ -15,7 +36,7 @@ import javax.swing.JFileChooser;
  */
 public class InitFrame extends javax.swing.JFrame {
 
-    Map<String, Float[]> createdCenters;
+    Map<String, float[]> createdCenters;
 
     /**
      * Creates new form InitFrame
@@ -424,23 +445,76 @@ public class InitFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_algorithmComboBoxActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-//        ClassificationFrame cf = new ClassificationFrame();
-//        cf.setVisible(true);
+        File initFolder = new File(chosenInitFolderTextField.getText());
+        CustColor.ColorSpace space = CustColor.ColorSpace.RGB;
+        SmoothingFunction sf = getSmoothingFunction();
+        WeightFunction wf = new WeightFunction();
+        AlgorithmToApply algo = getAlgorithm();
+        DistanceFunction dist = new EuclideanDistanceFunction();
+        double discardDist = Double.MAX_VALUE;
+        if (useDiscardDistanceCheckBox.isSelected()) {
+            discardDist = Double.parseDouble(discardDistanceTextField.getText());
+        }
+        MethodToApply meth = new MethodToApply(sf, space, wf, dist, discardDist, useFixedValCheckBox.isSelected());
+        List<CustColor> centers = new ArrayList<CustColor>(createdCenters.size());
+        for (String name : createdCenters.keySet()) {
+            centers.add(new CustColor(name, createdCenters.get(name)));
+        }
+        try {
+            ClassificationFrame cf = new ClassificationFrame(initFolder, space, centers, algo, meth);
+            cf.setVisible(true);
+        } catch (IOException ex) {
+            Logger.getLogger(InitFrame.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_jButton2ActionPerformed
+    private SmoothingFunction getSmoothingFunction() {
+        if (sfNoneRadioButton.isSelected()) {
+            return new SmoothingFunction();
+        } else if (sfMINRadioButton.isSelected()) {
+            return new MINSmoothingFunction();
+        }
+        return new AVGSmoothingFunction(2);
+    }
 
+    private AlgorithmToApply getAlgorithm() {
+        switch ((String) algorithmComboBox.getSelectedItem()) {
+            //Basic Algorithm, Equal Distance Count Double, Add To Multiple Centers
+            case "Basic Algorithm":
+                if (useDiscardDistanceCheckBox.isSelected()) {
+                    return new BasicWithDiscardDistanceAlgorithm();
+                }
+                return new BasicAlgorithm();
+            case "Equal Distance Count Double":
+                return new EqDistCountDoubleAlgorithm();
+            default:
+                if (useDiscardDistanceCheckBox.isSelected()) {
+                    return new AddToMultipleCentersMaxDistAlgorithm();
+                }
+                return new AddToMultipleCentersAlgorithm();
+        }
+    }
+
+    private WeightFunction getWeightFunction() {
+        if (wfNoneRadioButton.isSelected()) {
+            return new WeightFunction();
+        } else if (wfExpRadioButton.isSelected()) {
+            return new ExpWeightFunction();
+        }
+        return new ReciWeightFunction();
+
+    }
     private void redTextFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_redTextFieldActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_redTextFieldActionPerformed
 
     private void addColorButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addColorButtonActionPerformed
-        Float[] values = new Float[]{Float.parseFloat(redTextField.getText()),
+        float[] values = new float[]{Float.parseFloat(redTextField.getText()),
             Float.parseFloat(greenTextField.getText()), Float.parseFloat(blueTextField.getText())};
         createdCenters.put(colorNameTextField.getText(), values);
         jTable1.setModel(new GravCenterTableModel(createdCenters));
     }//GEN-LAST:event_addColorButtonActionPerformed
 
     private void useFixedValCheckBoxStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_useFixedValCheckBoxStateChanged
-        
     }//GEN-LAST:event_useFixedValCheckBoxStateChanged
 
     private void useDiscardDistanceCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_useDiscardDistanceCheckBoxActionPerformed
