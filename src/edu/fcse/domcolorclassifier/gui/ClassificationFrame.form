@@ -222,7 +222,7 @@
                   <Group type="102" alignment="0" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="jLabel2" max="32767" attributes="0"/>
+                          <Component id="largePreviewLabel" max="32767" attributes="0"/>
                           <Group type="102" attributes="0">
                               <Component id="imageDetailsScrollPane" min="-2" pref="205" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
@@ -242,7 +242,7 @@
                           <Component id="thumbnailsScrollPane" pref="153" max="32767" attributes="0"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="jLabel2" pref="187" max="32767" attributes="0"/>
+                      <Component id="largePreviewLabel" pref="187" max="32767" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                   </Group>
               </Group>
@@ -288,7 +288,7 @@
                 </Container>
               </SubComponents>
             </Container>
-            <Component class="javax.swing.JLabel" name="jLabel2">
+            <Component class="javax.swing.JLabel" name="largePreviewLabel">
               <Properties>
                 <Property name="horizontalAlignment" type="int" value="0"/>
                 <Property name="text" type="java.lang.String" value="tuka ide slika preview"/>

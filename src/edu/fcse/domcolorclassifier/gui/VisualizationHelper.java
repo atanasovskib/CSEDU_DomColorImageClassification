@@ -16,8 +16,11 @@ import edu.fcse.domcolorclassifier.algorithms.visualization.EqDistCountDoubleAlg
 import edu.fcse.domcolorclassifier.colorutils.CustColor;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -59,11 +62,17 @@ public class VisualizationHelper {
         originalFilename = fileName;
     }
 
-    public ClassificationResultWithVisualization classify(ClassificationFrame frame) {
-        return null;
+    public void classify(ClassificationFrame frame) {
+        frame.notifyVizuStarted();
+        try {
+            ClassificationResultWithVisualization rezu = algo.classifyImage(new File(originalFilename), method, gravCenters);
+        } catch (IOException ex) {
+            frame.notifyVizuEnd();
+            Logger.getLogger(VisualizationHelper.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
-    public VisualizationHelper init(MethodToApply method, AlgorithmToApply algorithm, String fileName, List<CustColor> gravCenters) {
+    public static VisualizationHelper init(MethodToApply method, AlgorithmToApply algorithm, String fileName, List<CustColor> gravCenters) {
         if (instance != null && instance.getOriginalFilename().equals(fileName) && gravCenters.equals(gravCenters)) {
             return instance;
         }

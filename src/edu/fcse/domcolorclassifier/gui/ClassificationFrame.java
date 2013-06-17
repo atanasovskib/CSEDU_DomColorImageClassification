@@ -10,15 +10,12 @@ import edu.fcse.domcolorclassifier.MethodToApply;
 import edu.fcse.domcolorclassifier.algorithms.AlgorithmToApply;
 import edu.fcse.domcolorclassifier.colorutils.CustColor;
 import edu.fcse.domcolorclassifier.gui.custcomponents.ClassificationThread;
-import java.awt.Label;
 import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import javax.swing.DefaultListModel;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JPanel;
 
 /**
  *
@@ -29,6 +26,8 @@ public class ClassificationFrame extends javax.swing.JFrame {
     private Classificator classificator;
     private ClassificationThread cThread;
     private boolean clickOnList = false;
+    private MethodToApply method;
+    private AlgorithmToApply algor;
 
     public ClassificationFrame(File initFolder, CustColor.ColorSpace space, List<CustColor> centers, AlgorithmToApply algo, MethodToApply meth) throws IOException {
         initComponents();
@@ -40,7 +39,19 @@ public class ClassificationFrame extends javax.swing.JFrame {
         }
         this.datasetList.setModel(listModel);
         cThread = new ClassificationThread(this, classificator);
+        this.method = meth;
+        this.algor = algo;
+    }
 
+    public void notifyVizuStarted() {
+        this.setEnabled(false);
+        jTabbedPane1.setSelectedIndex(1);
+        largePreviewLabel.setText("Visialization started. Please wait!");
+    }
+
+    public void notifyVizuEnd() {
+        this.setEnabled(true);
+        //kurci palci
     }
 
     public void setDone() {
@@ -94,7 +105,7 @@ public class ClassificationFrame extends javax.swing.JFrame {
         imageDetailsVizLabel = new javax.swing.JLabel();
         thumbnailsScrollPane = new javax.swing.JScrollPane();
         thumnailHolderPanel = new javax.swing.JPanel();
-        jLabel2 = new javax.swing.JLabel();
+        largePreviewLabel = new javax.swing.JLabel();
         jMenuBar1 = new javax.swing.JMenuBar();
         cmdMenu = new javax.swing.JMenu();
         startMenuItem = new javax.swing.JMenuItem();
@@ -190,8 +201,8 @@ public class ClassificationFrame extends javax.swing.JFrame {
 
         thumbnailsScrollPane.setViewportView(thumnailHolderPanel);
 
-        jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel2.setText("tuka ide slika preview");
+        largePreviewLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        largePreviewLabel.setText("tuka ide slika preview");
 
         javax.swing.GroupLayout visualRezPanelLayout = new javax.swing.GroupLayout(visualRezPanel);
         visualRezPanel.setLayout(visualRezPanelLayout);
@@ -200,7 +211,7 @@ public class ClassificationFrame extends javax.swing.JFrame {
             .addGroup(visualRezPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(visualRezPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(largePreviewLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(visualRezPanelLayout.createSequentialGroup()
                         .addComponent(imageDetailsScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 205, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -215,7 +226,7 @@ public class ClassificationFrame extends javax.swing.JFrame {
                     .addComponent(imageDetailsScrollPane)
                     .addComponent(thumbnailsScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 153, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, 187, Short.MAX_VALUE)
+                .addComponent(largePreviewLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 187, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -326,10 +337,13 @@ public class ClassificationFrame extends javax.swing.JFrame {
     private void popupVisualizeMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_popupVisualizeMenuItemActionPerformed
         jTabbedPane1.setSelectedIndex(1);
         java.awt.GridLayout layout = new java.awt.GridLayout(1, 0);
-        layout.setVgap(3);
+        layout.setHgap(3);
         thumnailHolderPanel.removeAll();
         thumnailHolderPanel.setLayout(layout);
         List<CustColor> centers = classificator.getGravityCenters();
+        VisualizationHelper helper = VisualizationHelper.init(method, algor,
+                classificator.getFilesForClassification().get(datasetList.getSelectedIndex()), centers);
+        helper.classify(this);
         for (CustColor c : centers) {
             JButton l1 = new javax.swing.JButton();
             l1.setText(c.getName());
@@ -345,11 +359,11 @@ public class ClassificationFrame extends javax.swing.JFrame {
     private javax.swing.JScrollPane imageDetailsScrollPane;
     private javax.swing.JLabel imageDetailsVizLabel;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JPopupMenu jPopupMenu1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTabbedPane jTabbedPane1;
+    private javax.swing.JLabel largePreviewLabel;
     private javax.swing.JMenuItem pauseMenuItem;
     private javax.swing.JMenuItem popupVisualizeMenuItem;
     private javax.swing.JTextArea rezTextArea;
