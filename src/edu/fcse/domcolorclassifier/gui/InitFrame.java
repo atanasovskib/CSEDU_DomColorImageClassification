@@ -448,7 +448,7 @@ public class InitFrame extends javax.swing.JFrame {
         File initFolder = new File(chosenInitFolderTextField.getText());
         CustColor.ColorSpace space = CustColor.ColorSpace.RGB;
         SmoothingFunction sf = getSmoothingFunction();
-        WeightFunction wf = new WeightFunction();
+        WeightFunction wf = getWeightFunction();
         AlgorithmToApply algo = getAlgorithm();
         DistanceFunction dist = new EuclideanDistanceFunction();
         double discardDist = Double.MAX_VALUE;

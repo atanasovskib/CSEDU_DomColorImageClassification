@@ -4,10 +4,12 @@
  */
 package edu.fcse.domcolorclassifier.gui;
 
+import edu.fcse.domcolorclassifier.ClassificationResult;
 import edu.fcse.domcolorclassifier.Classificator;
 import edu.fcse.domcolorclassifier.MethodToApply;
 import edu.fcse.domcolorclassifier.algorithms.AlgorithmToApply;
 import edu.fcse.domcolorclassifier.colorutils.CustColor;
+import edu.fcse.domcolorclassifier.gui.custcomponents.ClassificationThread;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
@@ -20,16 +22,41 @@ import javax.swing.DefaultListModel;
 public class ClassificationFrame extends javax.swing.JFrame {
 
     private Classificator classificator;
-    private List<String> filesToBeClassified;
+    private ClassificationThread cThread;
+    private boolean clickOnList = false;
+
     public ClassificationFrame(File initFolder, CustColor.ColorSpace space, List<CustColor> centers, AlgorithmToApply algo, MethodToApply meth) throws IOException {
         initComponents();
         classificator = new Classificator(initFolder, space, centers, algo, meth);
-        filesToBeClassified=classificator.getFilesForClassification();
-         DefaultListModel listModel = new DefaultListModel();
-         for(String fileName:filesToBeClassified){
-             listModel.addElement(fileName.substring(fileName.lastIndexOf(File.separatorChar)+1));
-         }
-         this.datasetList.setModel(listModel);
+        List<String> filesToBeClassified = classificator.getFilesForClassification();
+        DefaultListModel listModel = new DefaultListModel();
+        for (String fileName : filesToBeClassified) {
+            listModel.addElement(fileName.substring(fileName.lastIndexOf(File.separatorChar) + 1));
+        }
+        this.datasetList.setModel(listModel);
+        cThread = new ClassificationThread(this, classificator);
+
+    }
+
+    public void setDone() {
+        rezTextArea.append("\n Done");
+    }
+
+    public synchronized void updateTxtRezPanel() {
+        if (jTabbedPane1.getSelectedIndex() == 0 && !clickOnList) {
+            List<ClassificationResult> results = classificator.getClassifiedFiles();
+            StringBuilder text = new StringBuilder();
+            for (ClassificationResult c : results) {
+                text.append("File: ");
+                text.append(c.getFileName().substring(c.getFileName().lastIndexOf(File.separatorChar) + 1));
+                text.append("\n Classified as: ");
+                text.append(c.getClassifiedAs().toString());
+                text.append("\n-------------------------------\n");
+            }
+            rezTextArea.setText(text.toString());
+        }
+
+        //zemi sinhronizirano rezultati prikazi ako panelo e vidliv
     }
 
     /**
@@ -51,6 +78,11 @@ public class ClassificationFrame extends javax.swing.JFrame {
         rezTextArea = new javax.swing.JTextArea();
         visualRezPanel = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
+        jMenuBar1 = new javax.swing.JMenuBar();
+        cmdMenu = new javax.swing.JMenu();
+        startMenuItem = new javax.swing.JMenuItem();
+        pauseMenuItem = new javax.swing.JMenuItem();
+        stopMenuItem = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("DomColorClassification - Classification");
@@ -59,9 +91,19 @@ public class ClassificationFrame extends javax.swing.JFrame {
         jLabel1.setText("Data set");
 
         datasetList.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        datasetList.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
+            public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
+                datasetListValueChanged(evt);
+            }
+        });
         datasetScrollPane.setViewportView(datasetList);
 
         showAllButton.setText("Show all");
+        showAllButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                showAllButtonActionPerformed(evt);
+            }
+        });
 
         rezTextArea.setEditable(false);
         rezTextArea.setColumns(20);
@@ -88,7 +130,7 @@ public class ClassificationFrame extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(showAllButton)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 300, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 279, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -109,12 +151,37 @@ public class ClassificationFrame extends javax.swing.JFrame {
         visualRezPanelLayout.setVerticalGroup(
             visualRezPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, visualRezPanelLayout.createSequentialGroup()
-                .addContainerGap(164, Short.MAX_VALUE)
+                .addContainerGap(143, Short.MAX_VALUE)
                 .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 176, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
 
         jTabbedPane1.addTab("Visualization", visualRezPanel);
+
+        cmdMenu.setText("Controll");
+
+        startMenuItem.setText("Start");
+        startMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                startMenuItemActionPerformed(evt);
+            }
+        });
+        cmdMenu.add(startMenuItem);
+
+        pauseMenuItem.setText("Pause");
+        cmdMenu.add(pauseMenuItem);
+
+        stopMenuItem.setText("Stop");
+        stopMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                stopMenuItemActionPerformed(evt);
+            }
+        });
+        cmdMenu.add(stopMenuItem);
+
+        jMenuBar1.add(cmdMenu);
+
+        setJMenuBar(jMenuBar1);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -124,8 +191,8 @@ public class ClassificationFrame extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel1)
-                    .addComponent(datasetScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 123, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                    .addComponent(datasetScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 169, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jTabbedPane1)
                 .addContainerGap())
         );
@@ -144,15 +211,39 @@ public class ClassificationFrame extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void datasetListValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_datasetListValueChanged
+        this.clickOnList = true;
+    }//GEN-LAST:event_datasetListValueChanged
+
+    private void showAllButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_showAllButtonActionPerformed
+        clickOnList = false;
+        updateTxtRezPanel();
+    }//GEN-LAST:event_showAllButtonActionPerformed
+
+    private void startMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_startMenuItemActionPerformed
+        startMenuItem.setEnabled(false);
+        cThread.start();
+        rezTextArea.setText("Working... Please wait");
+    }//GEN-LAST:event_startMenuItemActionPerformed
+
+    private void stopMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_stopMenuItemActionPerformed
+        cThread.setShouldClassify(false);
+    }//GEN-LAST:event_stopMenuItemActionPerformed
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JMenu cmdMenu;
     private javax.swing.JList datasetList;
     private javax.swing.JScrollPane datasetScrollPane;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTabbedPane jTabbedPane1;
+    private javax.swing.JMenuItem pauseMenuItem;
     private javax.swing.JTextArea rezTextArea;
     private javax.swing.JButton showAllButton;
+    private javax.swing.JMenuItem startMenuItem;
+    private javax.swing.JMenuItem stopMenuItem;
     private javax.swing.JPanel textRezPanel;
     private javax.swing.JPanel visualRezPanel;
     // End of variables declaration//GEN-END:variables

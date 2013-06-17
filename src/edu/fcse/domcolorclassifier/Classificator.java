@@ -38,6 +38,7 @@ public class Classificator {
         this.algorithm = algorithm;
         this.method = method;
         initFilesForClassification(initFolder);
+        classifiedFiles = new ArrayList<>(filesForClassification.size());
     }
 
     private void initFilesForClassification(File folder) {
@@ -68,16 +69,20 @@ public class Classificator {
                 method, gravityCenters);
 
         if (addToListOfClassified) {
-            classifiedFiles.add(result);
+            addToClassifiedFiles(result);
         }
         return result;
     }
 
-    public List<String> getFilesForClassification() {
+    private synchronized void addToClassifiedFiles(ClassificationResult result) {
+        classifiedFiles.add(result);
+    }
+
+    public synchronized List<String> getFilesForClassification() {
         return filesForClassification;
     }
 
-    public List<ClassificationResult> getClassifiedFiles() {
+    public synchronized List<ClassificationResult> getClassifiedFiles() {
         return classifiedFiles;
     }
 
