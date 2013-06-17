@@ -27,17 +27,16 @@ public class Classificator {
 
     public Classificator(File initFolder, CustColor.ColorSpace colorSpace, List<CustColor> gravityCentersInRGB, AlgorithmToApply algorithm, MethodToApply method) {
         gravityCenters = new ArrayList<>(gravityCentersInRGB.size());
-
-
+        this.space = colorSpace;
         for (int i = 0; i < gravityCentersInRGB.size(); i++) {
             CustColor curr = gravityCentersInRGB.get(i);
+
             float[] det = convertRGBtoColorSpace(space, curr.getValues());
             gravityCenters.add(new CustColor(curr.getName(), det));
         }
 
         this.algorithm = algorithm;
         this.method = method;
-        this.space = colorSpace;
         initFilesForClassification(initFolder);
     }
 

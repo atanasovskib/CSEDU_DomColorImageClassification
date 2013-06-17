@@ -11,6 +11,7 @@ import edu.fcse.domcolorclassifier.colorutils.CustColor;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import javax.swing.DefaultListModel;
 
 /**
  *
@@ -19,11 +20,16 @@ import java.util.List;
 public class ClassificationFrame extends javax.swing.JFrame {
 
     private Classificator classificator;
-
+    private List<String> filesToBeClassified;
     public ClassificationFrame(File initFolder, CustColor.ColorSpace space, List<CustColor> centers, AlgorithmToApply algo, MethodToApply meth) throws IOException {
         initComponents();
         classificator = new Classificator(initFolder, space, centers, algo, meth);
-
+        filesToBeClassified=classificator.getFilesForClassification();
+         DefaultListModel listModel = new DefaultListModel();
+         for(String fileName:filesToBeClassified){
+             listModel.addElement(fileName.substring(fileName.lastIndexOf(File.separatorChar)+1));
+         }
+         this.datasetList.setModel(listModel);
     }
 
     /**
