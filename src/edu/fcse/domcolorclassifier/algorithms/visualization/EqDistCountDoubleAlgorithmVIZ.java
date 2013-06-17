@@ -1,8 +1,8 @@
 package edu.fcse.domcolorclassifier.algorithms.visualization;
 
-import edu.fcse.domcolorclassifier.ClassificationResult;
 import edu.fcse.domcolorclassifier.ClassificationResultWithVisualization;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -18,26 +18,30 @@ import java.util.Map;
 import javax.imageio.ImageIO;
 
 /**
- * The Basic Algorithm goes over each of the pixels in a image, finds which of
- * the color centers is closest to current pixel and counts the current pixel as
- * belonging to that color center, at the end the name of the color center with
- * the most counted pixels is returned as the result of the classification
+ * Equal Distance Count Double Algorithm. This algorithm differs from the Basic
+ * Algorithm in such a way that when a pixel is equally distanced to two or more
+ * gravity centers it is added as belonging to all of the grav. centers that are
+ * at that distance. If the argument fixedValue passed to the classifyImage
+ * method is true than the value added to the closest grav. centers is always 1
+ * multiplied by the result of the weight function otherwise the value added to
+ * the closest centers is W/R where R=the distance from the color of the pixel
+ * and the color of the grav. center and W is the result of the weight function
  *
- * @author Blagoj Atanasovski
+ * @author Blagoj Atansovski
  *
  */
-public class BasicWithDiscardDistanceAlgorithmVIZ implements AlgorithmToApplyWithVisualization {
+public class EqDistCountDoubleAlgorithmVIZ implements AlgorithmToApplyWithVisualization {
 
     @Override
     public ClassificationResultWithVisualization classifyImage(File fileToClassify, MethodToApply method, List<CustColor> gravityCenters) throws IOException {
-        HashMap<CustColor, Double> colorAppearence = new HashMap<>();
+        BufferedImage imageToClassify = ImageIO.read(fileToClassify);
         Map<CustColor, Double> colorAppearance = new HashMap<>();
         Map<CustColor, List<int[]>> magic = new HashMap<>();
         for (CustColor cc : gravityCenters) {
             colorAppearance.put(cc, 0.0);
             magic.put(cc, new LinkedList<int[]>());
         }
-        BufferedImage imageToClassify = ImageIO.read(fileToClassify);
+
         ImgData imgData = new ImgData(imageToClassify);
         DistanceFunction distanceF = method.getDistanceFunction();
         WeightFunction weiF = method.getWeightFunction();
@@ -45,12 +49,14 @@ public class BasicWithDiscardDistanceAlgorithmVIZ implements AlgorithmToApplyWit
         float[][][] pixelsD = method.convertToColorSpace(pixels);
         int width = imageToClassify.getWidth();
         int height = imageToClassify.getHeight();
+        List<CustColor> minimums = new ArrayList<>(
+                gravityCenters.size());
         for (int i = 0; i < height; i++) {
             for (int j = 0; j < width; j++) {
-
-                CustColor min = gravityCenters.get(0);
-                double minDistance = distanceF.getDistance(min.getValues(),
-                        pixelsD[i][j]);
+                minimums.clear();
+                minimums.add(gravityCenters.get(0));
+                double minDistance = distanceF.getDistance(minimums.get(0)
+                        .getValues(), pixelsD[i][j]);
                 for (int k = 1; k < gravityCenters.size(); k++) {
                     CustColor curr = gravityCenters.get(k);
                     float[] valuesCurr = curr.getValues();
@@ -58,38 +64,36 @@ public class BasicWithDiscardDistanceAlgorithmVIZ implements AlgorithmToApplyWit
                             pixelsD[i][j]);
                     if (minDistance > currDistance) {
                         minDistance = currDistance;
-                        min = curr;
+                        minimums.clear();
+                        minimums.add(curr);
                     } else if (minDistance == currDistance) {
-                        min = null;
-                        break;
+                        minimums.add(curr);
                     }
                 }
-                if (min != null) {
-                    double R;
-                    if (minDistance <= method.getDiscardDistance()) {
-                        if (method.getFixedValue()) {
-                            R = 1;
-                        } else {
-                            R = 1 / minDistance;
-                        }
-                        magic.get(min).add(new int[]{j, i});
-                        double weight = colorAppearence.get(min)
-                                + weiF.getWeight(i, j, height / 2, width / 2);
-                        weight *= R;
-                        colorAppearence.put(min, weight);
-                    }
+                double weight = weiF.getWeight(i, j, height / 2, width / 2);
+                double R;
+                if (method.getFixedValue()) {
+                    R = 1;
+                } else {
+                    R = 1 / minDistance;
+                }
+                weight *= R;
+                for (CustColor minColor : minimums) {
+                    colorAppearance.put(minColor, colorAppearance.get(minColor)
+                            + weight);
+                    magic.get(minColor).add(new int[]{j, i});
                 }
 
             }
         }
 
         CustColor max = gravityCenters.get(0);
-        System.out.println(colorAppearence.toString());
-        double maxAppearence = colorAppearence.get(max);
-        for (CustColor cc : colorAppearence.keySet()) {
-            if (colorAppearence.get(cc) > maxAppearence) {
+        System.out.println(colorAppearance.toString());
+        double maxAppearence = colorAppearance.get(max);
+        for (CustColor cc : colorAppearance.keySet()) {
+            if (colorAppearance.get(cc) > maxAppearence) {
                 max = cc;
-                maxAppearence = colorAppearence.get(cc);
+                maxAppearence = colorAppearance.get(cc);
             }
         }
         ClassificationResultWithVisualization rez = new ClassificationResultWithVisualization(fileToClassify.getName(), max, magic, width, height);

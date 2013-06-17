@@ -1,25 +1,23 @@
 package edu.fcse.domcolorclassifier;
 
 import edu.fcse.domcolorclassifier.colorutils.CustColor;
-import java.awt.image.BufferedImage;
-import java.util.List;
 import java.util.Map;
 
 /**
  *
  * @author Blagoj Atanasovski
  */
-public class ClassificationResultWithVisualization {
+public class ClassificationResult {
 
     private String fileName;
     private int width, height;
     private CustColor classifiedAs;
-    private Map<CustColor, List<int[]>> pixelsToBeColored;
+    private Map<CustColor, Double> centerValues;
 
-    public ClassificationResultWithVisualization(String fileName, CustColor classifiedAs, Map<CustColor, List<int[]>> pixelsToBeColored, int width, int height) {
+    public ClassificationResult(String fileName, CustColor classifiedAs, Map<CustColor, Double> centerValues, int width, int height) {
         this.fileName = fileName;
         this.classifiedAs = classifiedAs;
-        this.pixelsToBeColored = pixelsToBeColored;
+        this.centerValues = centerValues;
         this.width = width;
         this.height = height;
     }
@@ -48,7 +46,11 @@ public class ClassificationResultWithVisualization {
         this.classifiedAs = classifiedAs;
     }
 
-    public Map<CustColor, List<int[]>> getPixelsToBeColored() {
-        return pixelsToBeColored;
+    public Map<CustColor, Double> getCenterValues() {
+        return centerValues;
+    }
+
+    public void setCenterValues(Map<CustColor, Double> centerValues) {
+        this.centerValues = centerValues;
     }
 }
