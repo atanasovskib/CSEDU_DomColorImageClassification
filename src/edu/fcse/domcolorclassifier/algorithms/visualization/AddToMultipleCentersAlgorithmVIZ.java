@@ -28,7 +28,7 @@ import javax.imageio.ImageIO;
  */
 public class AddToMultipleCentersAlgorithmVIZ implements AlgorithmToApplyWithVisualization {
 
-    private final int THRESHHOLD = 220;
+    private final int THRESHHOLD = 200;
 
     @Override
     public ClassificationResultWithVisualization classifyImage(File fileToClassify, MethodToApply method, List<CustColor> gravityCenters) throws IOException {

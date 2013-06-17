@@ -1,6 +1,5 @@
 package edu.fcse.domcolorclassifier.algorithms.visualization;
 
-import edu.fcse.domcolorclassifier.ClassificationResult;
 import edu.fcse.domcolorclassifier.ClassificationResultWithVisualization;
 import java.awt.image.BufferedImage;
 import java.util.HashMap;
