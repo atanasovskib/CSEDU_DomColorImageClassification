@@ -1,7 +1,6 @@
-package edu.fcse.domcolorclassifier.algorithms;
+package edu.fcse.domcolorclassifier.algorithms.visualization;
 
-import edu.fcse.domcolorclassifier.algorithms.AlgorithmToApply;
-import edu.fcse.domcolorclassifier.ClassificationResult;
+import edu.fcse.domcolorclassifier.ClassificationResultWithVisualization;
 import java.awt.image.BufferedImage;
 import java.util.HashMap;
 import java.util.List;
@@ -13,25 +12,27 @@ import edu.fcse.domcolorclassifier.functions.distance.DistanceFunction;
 import edu.fcse.domcolorclassifier.functions.weight.WeightFunction;
 import java.io.File;
 import java.io.IOException;
+import java.util.LinkedList;
+import java.util.Map;
 import javax.imageio.ImageIO;
 
 /**
- * Add to Multiple Color Centers Algorithm. This algorithm differs from the
- * Basic Algorithm in such a way it classifies the pixels as not only belonging
- * to one centroid but to more. It differs from the EqDistCountDoubleAlgorithm
- * that it does not look for the closest grav. centers but calculates the value
- * for all of them
+ * extension to AddToMultipleCenters algorithm, checks to see if a pixel's
+ * color is within a certain radius of a grav. center if yes it is valued,
+ * otherwise discarded
  *
  * @author Blagoj Atansovski
  *
  */
-public class AddToMultipleCentersAlgorithm implements AlgorithmToApply {
+public class AddToMultipleCentersMaxDistAlgorithmVIZ implements AlgorithmToApplyWithVisualization {
 
     @Override
-    public ClassificationResult classifyImage(File fileToClassify, MethodToApply method, List<CustColor> gravityCenters) throws IOException {
-        HashMap<CustColor, Double> colorAppearance = new HashMap<>();
+    public ClassificationResultWithVisualization classifyImage(File fileToClassify, MethodToApply method, List<CustColor> gravityCenters) throws IOException {
+        Map<CustColor, Double> colorAppearance = new HashMap<>();
+        Map<CustColor, List<int[]>> magic = new HashMap<>();
         for (CustColor cc : gravityCenters) {
             colorAppearance.put(cc, 0.0);
+            magic.put(cc, new LinkedList<int[]>());
         }
         BufferedImage imageToClassify = ImageIO.read(fileToClassify);
         ImgData imgData = new ImgData(imageToClassify);
@@ -51,9 +52,13 @@ public class AddToMultipleCentersAlgorithm implements AlgorithmToApply {
                     float[] valuesCurr = curr.getValues();
                     double currDistance = distanceF.getDistance(valuesCurr,
                             pixelsD[i][j]);
-                    double R = 1 / currDistance;
-                    colorAppearance.put(curr, colorAppearance.get(curr)
-                            + weight * R);
+
+                    if (currDistance <= method.getDiscardDistance()) {
+                        magic.get(curr).add(new int[]{j, i});
+                        double R = 1 / currDistance;//TODO: proveri so znaci ovoa dali imam dvojno delenje t.e. delenje so nula koma neso 
+                        colorAppearance.put(curr, colorAppearance.get(curr)
+                                + weight * R);
+                    }
                 }
 
             }
@@ -68,7 +73,7 @@ public class AddToMultipleCentersAlgorithm implements AlgorithmToApply {
                 maxAppearence = colorAppearance.get(cc);
             }
         }
-        ClassificationResult result = new ClassificationResult(fileToClassify.getAbsolutePath(), max, colorAppearance, width, height);
-        return result;
+        ClassificationResultWithVisualization rez = new ClassificationResultWithVisualization(fileToClassify.getName(), max, magic, width, height);
+        return rez;
     }
 }

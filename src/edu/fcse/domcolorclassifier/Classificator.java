@@ -11,7 +11,7 @@ import java.util.Map;
 
 import javax.imageio.ImageIO;
 
-import edu.fcse.domcolorclassifier.algorithms.AddToMultipleCentersAlgorithm;
+import edu.fcse.domcolorclassifier.algorithms.visualization.AddToMultipleCentersAlgorithmVIZ;
 import edu.fcse.domcolorclassifier.algorithms.AlgorithmToApply;
 import edu.fcse.domcolorclassifier.colorutils.ColorConvertor;
 import edu.fcse.domcolorclassifier.colorutils.CustColor;
@@ -24,6 +24,10 @@ public class Classificator {
     private List<String> filesForClassification;
     private List<ClassificationResult> classifiedFiles;
     private CustColor.ColorSpace space;
+
+    public List<CustColor> getGravityCenters() {
+        return gravityCenters;
+    }
 
     public Classificator(File initFolder, CustColor.ColorSpace colorSpace, List<CustColor> gravityCentersInRGB, AlgorithmToApply algorithm, MethodToApply method) {
         gravityCenters = new ArrayList<>(gravityCentersInRGB.size());

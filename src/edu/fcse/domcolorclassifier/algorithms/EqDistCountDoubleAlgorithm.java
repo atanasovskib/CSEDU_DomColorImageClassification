@@ -1,5 +1,7 @@
 package edu.fcse.domcolorclassifier.algorithms;
 
+import edu.fcse.domcolorclassifier.algorithms.AlgorithmToApply;
+import edu.fcse.domcolorclassifier.algorithms.*;
 import edu.fcse.domcolorclassifier.ClassificationResult;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;

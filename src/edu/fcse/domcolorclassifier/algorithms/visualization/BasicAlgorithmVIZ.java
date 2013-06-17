@@ -1,8 +1,7 @@
-package edu.fcse.domcolorclassifier.algorithms;
+package edu.fcse.domcolorclassifier.algorithms.visualization;
 
-import edu.fcse.domcolorclassifier.algorithms.AlgorithmToApply;
-import edu.fcse.domcolorclassifier.algorithms.*;
 import edu.fcse.domcolorclassifier.ClassificationResult;
+import edu.fcse.domcolorclassifier.ClassificationResultWithVisualization;
 import java.awt.image.BufferedImage;
 import java.util.HashMap;
 import java.util.List;
@@ -14,6 +13,8 @@ import edu.fcse.domcolorclassifier.functions.distance.DistanceFunction;
 import edu.fcse.domcolorclassifier.functions.weight.WeightFunction;
 import java.io.File;
 import java.io.IOException;
+import java.util.LinkedList;
+import java.util.Map;
 import javax.imageio.ImageIO;
 
 /**
@@ -25,17 +26,17 @@ import javax.imageio.ImageIO;
  * @author Blagoj Atanasovski
  *
  */
-public class BasicWithDiscardDistanceAlgorithm implements AlgorithmToApply {
+public class BasicAlgorithmVIZ implements AlgorithmToApplyWithVisualization {
 
-  
     @Override
-    public ClassificationResult classifyImage(File fileToClassify, MethodToApply method, List<CustColor> gravityCenters) throws IOException {
-        
-        HashMap<CustColor, Double> colorAppearence = new HashMap<>();
+    public ClassificationResultWithVisualization classifyImage(File fileToClassify, MethodToApply method, List<CustColor> gravityCenters) throws IOException {
+        BufferedImage imageToClassify = ImageIO.read(fileToClassify);
+        Map<CustColor, Double> colorAppearance = new HashMap<>();
+        Map<CustColor, List<int[]>> magic = new HashMap<>();
         for (CustColor cc : gravityCenters) {
-            colorAppearence.put(cc, 0.0);
+            colorAppearance.put(cc, 0.0);
+            magic.put(cc, new LinkedList<int[]>());
         }
-        BufferedImage imageToClassify=ImageIO.read(fileToClassify);
         ImgData imgData = new ImgData(imageToClassify);
         DistanceFunction distanceF = method.getDistanceFunction();
         WeightFunction weiF = method.getWeightFunction();
@@ -64,32 +65,31 @@ public class BasicWithDiscardDistanceAlgorithm implements AlgorithmToApply {
                 }
                 if (min != null) {
                     double R;
-                    if (minDistance <= method.getDiscardDistance()) {
-                        if (method.getFixedValue()) {
-                            R = 1;
-                        } else {
-                            R = 1 / minDistance;
-                        }
-                        double weight = colorAppearence.get(min)
-                                + weiF.getWeight(i, j, height / 2, width / 2);
-                        weight *= R;
-                        colorAppearence.put(min, weight);
+                    if (method.getFixedValue()) {
+                        R = 1;
+                    } else {
+                        R = 1 / minDistance;
                     }
+                    double weight = colorAppearance.get(min)
+                            + weiF.getWeight(i, j, height / 2, width / 2);
+                    weight *= R;
+                    colorAppearance.put(min, weight);
+                    magic.get(min).add(new int[]{j, i});
                 }
 
             }
         }
 
         CustColor max = gravityCenters.get(0);
-        System.out.println(colorAppearence.toString());
-        double maxAppearence = colorAppearence.get(max);
-        for (CustColor cc : colorAppearence.keySet()) {
-            if (colorAppearence.get(cc) > maxAppearence) {
+        System.out.println(colorAppearance.toString());
+        double maxAppearence = colorAppearance.get(max);
+        for (CustColor cc : colorAppearance.keySet()) {
+            if (colorAppearance.get(cc) > maxAppearence) {
                 max = cc;
-                maxAppearence = colorAppearence.get(cc);
+                maxAppearence = colorAppearance.get(cc);
             }
         }
-        ClassificationResult result = new ClassificationResult(fileToClassify.getAbsolutePath(), max, colorAppearence, width, height);
-        return result;
+        ClassificationResultWithVisualization rez = new ClassificationResultWithVisualization(fileToClassify.getName(), max, magic, width, height);
+        return rez;
     }
 }
