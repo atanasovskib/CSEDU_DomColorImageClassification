@@ -341,9 +341,9 @@ public class ClassificationFrame extends javax.swing.JFrame {
         thumnailHolderPanel.removeAll();
         thumnailHolderPanel.setLayout(layout);
         List<CustColor> centers = classificator.getGravityCenters();
-        VisualizationHelper helper = VisualizationHelper.init(method, algor,
+        VisualizationHelper.init(this, method, algor,
                 classificator.getFilesForClassification().get(datasetList.getSelectedIndex()), centers);
-        helper.classify(this);
+
         for (CustColor c : centers) {
             JButton l1 = new javax.swing.JButton();
             l1.setText(c.getName());
