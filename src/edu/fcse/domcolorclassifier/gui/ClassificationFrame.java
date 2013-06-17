@@ -11,24 +11,27 @@ import edu.fcse.domcolorclassifier.algorithms.AlgorithmToApply;
 import edu.fcse.domcolorclassifier.colorutils.CustColor;
 import edu.fcse.domcolorclassifier.gui.custcomponents.ClassificationThread;
 import java.awt.event.MouseEvent;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import javax.swing.DefaultListModel;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JLabel;
 
 /**
  *
  * @author Blagoj Atanasovski
  */
 public class ClassificationFrame extends javax.swing.JFrame {
-
+    
     private Classificator classificator;
     private ClassificationThread cThread;
     private boolean clickOnList = false;
     private MethodToApply method;
     private AlgorithmToApply algor;
-
+    
     public ClassificationFrame(File initFolder, CustColor.ColorSpace space, List<CustColor> centers, AlgorithmToApply algo, MethodToApply meth) throws IOException {
         initComponents();
         classificator = new Classificator(initFolder, space, centers, algo, meth);
@@ -42,29 +45,29 @@ public class ClassificationFrame extends javax.swing.JFrame {
         this.method = meth;
         this.algor = algo;
     }
-
+    
     public void notifyVizuStarted() {
         this.setEnabled(false);
         jTabbedPane1.setSelectedIndex(1);
         largePreviewLabel.setText("Visialization started. Please wait!");
     }
-
+    
     public void notifyVizuEnd() {
         this.setEnabled(true);
         //kurci palci
     }
-
+    
     public void setDone() {
         rezTextArea.append("\n Done");
     }
-
+    
     public synchronized void updateTxtRezPanel(String message) {
         if (jTabbedPane1.getSelectedIndex() == 0 && !clickOnList) {
             rezTextArea.append(message);
             rezTextArea.append("\n----------------------------\n");
         }
     }
-
+    
     public synchronized void updateTxtRezPanel(ClassificationResult result) {
         if (jTabbedPane1.getSelectedIndex() == 0 && !clickOnList) {
             StringBuilder text = new StringBuilder();
@@ -75,10 +78,10 @@ public class ClassificationFrame extends javax.swing.JFrame {
             text.append("\nValues: ");
             text.append(result.getCenterValues().toString());
             text.append("\n-------------------------------\n");
-
+            
             rezTextArea.append(text.toString());
         }
-
+        
     }
 
     /**
@@ -288,7 +291,7 @@ public class ClassificationFrame extends javax.swing.JFrame {
 
     private void datasetListValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_datasetListValueChanged
     }//GEN-LAST:event_datasetListValueChanged
-
+    
     private void showAllButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_showAllButtonActionPerformed
         clickOnList = false;
         rezTextArea.setText("");
@@ -296,22 +299,22 @@ public class ClassificationFrame extends javax.swing.JFrame {
             updateTxtRezPanel(result);
         }
     }//GEN-LAST:event_showAllButtonActionPerformed
-
+    
     private void startMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_startMenuItemActionPerformed
         startMenuItem.setEnabled(false);
         cThread.start();
         rezTextArea.setText("Working... Please wait");
     }//GEN-LAST:event_startMenuItemActionPerformed
-
+    
     private void stopMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_stopMenuItemActionPerformed
         cThread.setShouldClassify(false);
     }//GEN-LAST:event_stopMenuItemActionPerformed
-
+    
     private void datasetListMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_datasetListMouseClicked
         if (evt.getButton() == MouseEvent.BUTTON3) {
             jPopupMenu1.show(datasetList, evt.getX(), evt.getY());
             datasetList.setSelectedIndex(datasetList.locationToIndex(evt.getPoint()));
-
+            
         }
         if (jTabbedPane1.getSelectedIndex() == 0 && cThread != null) {
             this.clickOnList = true;
@@ -333,7 +336,7 @@ public class ClassificationFrame extends javax.swing.JFrame {
             }
         }
     }//GEN-LAST:event_datasetListMouseClicked
-
+    
     private void popupVisualizeMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_popupVisualizeMenuItemActionPerformed
         jTabbedPane1.setSelectedIndex(1);
         java.awt.GridLayout layout = new java.awt.GridLayout(1, 0);
@@ -341,12 +344,11 @@ public class ClassificationFrame extends javax.swing.JFrame {
         thumnailHolderPanel.removeAll();
         thumnailHolderPanel.setLayout(layout);
         List<CustColor> centers = classificator.getGravityCenters();
-        VisualizationHelper.init(this, method, algor,
+        VisualizationHelper helper = VisualizationHelper.init(this, method, algor,
                 classificator.getFilesForClassification().get(datasetList.getSelectedIndex()), centers);
-
-        for (CustColor c : centers) {
-            JButton l1 = new javax.swing.JButton();
-            l1.setText(c.getName());
+        BufferedImage[] thumbs = helper.getThumbs();
+        for (BufferedImage bi : thumbs) {
+            JLabel l1 = new javax.swing.JLabel(new ImageIcon(bi));
             thumnailHolderPanel.add(l1);
         }
         thumnailHolderPanel.invalidate();

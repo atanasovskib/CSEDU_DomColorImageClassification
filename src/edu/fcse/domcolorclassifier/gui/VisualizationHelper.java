@@ -14,6 +14,7 @@ import edu.fcse.domcolorclassifier.algorithms.visualization.BasicAlgorithmVIZ;
 import edu.fcse.domcolorclassifier.algorithms.visualization.BasicWithDiscardDistanceAlgorithmVIZ;
 import edu.fcse.domcolorclassifier.algorithms.visualization.EqDistCountDoubleAlgorithmVIZ;
 import edu.fcse.domcolorclassifier.colorutils.CustColor;
+import edu.fcse.domcolorclassifier.gui.custcomponents.ImageTools;
 import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -34,12 +35,22 @@ import javax.imageio.ImageIO;
  */
 public class VisualizationHelper {
 
+    private final int THUMB_HEIGHT = 140;
     private static VisualizationHelper instance;
     private BufferedImage originalFile;
     private Map<CustColor, BufferedImage> colloredForCenter;
+    private BufferedImage[] thumbs;
     private String originalFilename;
     private List<CustColor> gravCenters;
     private AlgorithmToApplyWithVisualization algo;
+
+    public BufferedImage getOriginalFile() {
+        return originalFile;
+    }
+
+    public Map<CustColor, BufferedImage> getColloredForCenter() {
+        return colloredForCenter;
+    }
 
     public List<CustColor> getGravCenters() {
         return gravCenters;
@@ -47,6 +58,10 @@ public class VisualizationHelper {
 
     public String getOriginalFilename() {
         return originalFilename;
+    }
+
+    public BufferedImage[] getThumbs() {
+        return thumbs;
     }
 
     private VisualizationHelper(ClassificationFrame frame, MethodToApply method, AlgorithmToApply algorithm, String fileName, List<CustColor> gravCenters) {
@@ -68,10 +83,12 @@ public class VisualizationHelper {
         try {
             ClassificationResultWithVisualization rezu = algo.classifyImage(new File(originalFilename),
                     method, gravCenters);
+
             File origFile = new File(originalFilename);
             originalFile = ImageIO.read(origFile);
             Map<CustColor, List<int[]>> map = rezu.getPixelsToBeColored();
             int i = 0;
+            thumbs = new BufferedImage[map.size() + 1];
             for (CustColor c : map.keySet()) {
                 File newFile = new File("tmp_" + i);
                 copyFile(origFile, newFile);
@@ -85,6 +102,8 @@ public class VisualizationHelper {
                     Color cc = new Color((int) values[0], (int) values[1], (int) values[2]);
                     tmp.setRGB(next[0], next[1], cc.getRGB());
                 }
+                int proc = THUMB_HEIGHT / tmp.getHeight();
+                thumbs[i] = ImageTools.getScaledImage(tmp, tmp.getWidth() * proc, THUMB_HEIGHT);
             }
         } catch (IOException ex) {
             frame.notifyVizuEnd();
