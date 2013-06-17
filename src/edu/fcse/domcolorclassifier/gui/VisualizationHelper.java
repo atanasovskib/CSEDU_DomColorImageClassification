@@ -22,6 +22,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.channels.FileChannel;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -77,6 +78,7 @@ public class VisualizationHelper {
         } else {
             algo = new AddToMultipleCentersMaxDistAlgorithmVIZ();
         }
+        colloredForCenter = new HashMap<>();
         this.gravCenters = gravCenters;
         originalFilename = fileName;
         frame.notifyVizuStarted();
@@ -85,14 +87,18 @@ public class VisualizationHelper {
                     method, gravCenters);
 
             File origFile = new File(originalFilename);
+
             originalFile = ImageIO.read(origFile);
+            double proc = ((double) THUMB_HEIGHT) / originalFile.getHeight();
             Map<CustColor, List<int[]>> map = rezu.getPixelsToBeColored();
-            int i = 0;
+            int i = 1;
+
             thumbs = new BufferedImage[map.size() + 1];
+            thumbs[0] = ImageTools.getScaledImage(originalFile, (int) (originalFile.getWidth() * proc), THUMB_HEIGHT);
             for (CustColor c : map.keySet()) {
                 File newFile = new File("tmp_" + i);
                 copyFile(origFile, newFile);
-                i++;
+
                 BufferedImage tmp = ImageIO.read(newFile);
                 colloredForCenter.put(c, tmp);
                 Iterator<int[]> ite = map.get(c).iterator();
@@ -102,8 +108,9 @@ public class VisualizationHelper {
                     Color cc = new Color((int) values[0], (int) values[1], (int) values[2]);
                     tmp.setRGB(next[0], next[1], cc.getRGB());
                 }
-                int proc = THUMB_HEIGHT / tmp.getHeight();
-                thumbs[i] = ImageTools.getScaledImage(tmp, tmp.getWidth() * proc, THUMB_HEIGHT);
+                proc = ((double) THUMB_HEIGHT) / tmp.getHeight();
+                thumbs[i] = ImageTools.getScaledImage(tmp, (int) (tmp.getWidth() * proc), THUMB_HEIGHT);
+                i++;
             }
         } catch (IOException ex) {
             frame.notifyVizuEnd();
