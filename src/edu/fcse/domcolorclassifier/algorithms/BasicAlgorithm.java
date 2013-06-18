@@ -68,7 +68,11 @@ public class BasicAlgorithm implements AlgorithmToApply {
                         if (method.getFixedValue()) {
                             R = 1;
                         } else {
-                            R = 1 / minDistance;
+                            if (minDistance == 0) {
+                                R = 1;
+                            } else {
+                                R = 1 / minDistance;
+                            }
                         }
                         double weight = weiF.getWeight(i, j, height / 2, width / 2);
                         weight *= R;
