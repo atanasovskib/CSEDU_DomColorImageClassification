@@ -27,15 +27,14 @@ import javax.imageio.ImageIO;
  */
 public class BasicWithDiscardDistanceAlgorithm implements AlgorithmToApply {
 
-  
     @Override
     public ClassificationResult classifyImage(File fileToClassify, MethodToApply method, List<CustColor> gravityCenters) throws IOException {
-        
+
         HashMap<CustColor, Double> colorAppearence = new HashMap<>();
         for (CustColor cc : gravityCenters) {
             colorAppearence.put(cc, 0.0);
         }
-        BufferedImage imageToClassify=ImageIO.read(fileToClassify);
+        BufferedImage imageToClassify = ImageIO.read(fileToClassify);
         ImgData imgData = new ImgData(imageToClassify);
         DistanceFunction distanceF = method.getDistanceFunction();
         WeightFunction weiF = method.getWeightFunction();
@@ -70,10 +69,10 @@ public class BasicWithDiscardDistanceAlgorithm implements AlgorithmToApply {
                         } else {
                             R = 1 / minDistance;
                         }
-                        double weight = colorAppearence.get(min)
-                                + weiF.getWeight(i, j, height / 2, width / 2);
+                        double weight = weiF.getWeight(i, j, height / 2, width / 2);
                         weight *= R;
-                        colorAppearence.put(min, weight);
+                        colorAppearence.put(min, colorAppearence.get(min)
+                                + weight);
                     }
                 }
 

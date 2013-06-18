@@ -72,10 +72,10 @@ public class BasicWithDiscardDistanceAlgorithmVIZ implements AlgorithmToApplyWit
                             R = 1 / minDistance;
                         }
                         magic.get(min).add(new int[]{j, i});
-                        double weight = colorAppearence.get(min)
-                                + weiF.getWeight(i, j, height / 2, width / 2);
+                        double weight = weiF.getWeight(i, j, height / 2, width / 2);
                         weight *= R;
-                        colorAppearence.put(min, weight);
+                        colorAppearence.put(min, colorAppearence.get(min)
+                                + weight);
                     }
                 }
 

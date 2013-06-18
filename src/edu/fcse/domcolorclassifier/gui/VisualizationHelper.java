@@ -36,7 +36,7 @@ import javax.imageio.ImageIO;
  */
 public class VisualizationHelper {
 
-    private final int THUMB_HEIGHT = 140;
+    private final int THUMB_HEIGHT = 130;
     private static VisualizationHelper instance;
     private BufferedImage originalFile;
     private Map<CustColor, BufferedImage> colloredForCenter;
@@ -112,6 +112,7 @@ public class VisualizationHelper {
                 thumbs[i] = ImageTools.getScaledImage(tmp, (int) (tmp.getWidth() * proc), THUMB_HEIGHT);
                 i++;
             }
+            frame.notifyVizuEnd();
         } catch (IOException ex) {
             frame.notifyVizuEnd();
             Logger.getLogger(VisualizationHelper.class.getName()).log(Level.SEVERE, null, ex);

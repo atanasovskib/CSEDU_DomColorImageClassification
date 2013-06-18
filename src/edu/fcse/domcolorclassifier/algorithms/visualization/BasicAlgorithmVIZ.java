@@ -70,10 +70,9 @@ public class BasicAlgorithmVIZ implements AlgorithmToApplyWithVisualization {
                     } else {
                         R = 1 / minDistance;
                     }
-                    double weight = colorAppearance.get(min)
-                            + weiF.getWeight(i, j, height / 2, width / 2);
+                    double weight = weiF.getWeight(i, j, height / 2, width / 2);
                     weight *= R;
-                    colorAppearance.put(min, weight);
+                    colorAppearance.put(min, colorAppearance.get(min) + weight);
                     magic.get(min).add(new int[]{j, i});
                 }
 
