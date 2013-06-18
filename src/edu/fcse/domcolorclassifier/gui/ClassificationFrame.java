@@ -11,6 +11,8 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
@@ -26,6 +28,7 @@ public class ClassificationFrame extends javax.swing.JFrame {
     private boolean clickOnList = false;
     private MethodToApply method;
     private AlgorithmToApply algor;
+    private boolean isDone = false;
 
     public ClassificationFrame(File initFolder, CustColor.ColorSpace space, List<CustColor> centers, AlgorithmToApply algo, MethodToApply meth) throws IOException {
         initComponents();
@@ -36,7 +39,7 @@ public class ClassificationFrame extends javax.swing.JFrame {
             listModel.addElement(fileName.substring(fileName.lastIndexOf(File.separatorChar) + 1));
         }
         this.datasetList.setModel(listModel);
-        cThread = new ClassificationThread(this, classificator);
+
         this.method = meth;
         this.algor = algo;
     }
@@ -53,7 +56,7 @@ public class ClassificationFrame extends javax.swing.JFrame {
     }
 
     public void setDone() {
-        rezTextArea.append("\n Done");
+        rezTextArea.append("\n Done\n");
     }
 
     public synchronized void updateTxtRezPanel(String message) {
@@ -297,12 +300,28 @@ public class ClassificationFrame extends javax.swing.JFrame {
 
     private void startMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_startMenuItemActionPerformed
         startMenuItem.setEnabled(false);
+        isDone = false;
+        if (cThread != null) {
+            cThread.setShouldClassify(false);
+        }
+        try {
+            cThread.join();
+        } catch (InterruptedException ex) {
+            System.out.println("Old classification thread was interrupted. Starting new one");
+        }
+        cThread = new ClassificationThread(this, classificator);
         cThread.start();
         rezTextArea.setText("Working... Please wait");
+        stopMenuItem.setEnabled(true);
     }//GEN-LAST:event_startMenuItemActionPerformed
 
     private void stopMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_stopMenuItemActionPerformed
-        cThread.setShouldClassify(false);
+        isDone = true;
+        startMenuItem.setEnabled(true);
+        if (cThread != null) {
+            cThread.setShouldClassify(false);
+        }
+        stopMenuItem.setEnabled(false);
     }//GEN-LAST:event_stopMenuItemActionPerformed
 
     private void datasetListMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_datasetListMouseClicked
@@ -346,7 +365,7 @@ public class ClassificationFrame extends javax.swing.JFrame {
             JLabel l1 = new javax.swing.JLabel(new ImageIcon(bi));
             thumnailHolderPanel.add(l1);
         }
-        
+
         thumnailHolderPanel.repaint();
     }//GEN-LAST:event_popupVisualizeMenuItemActionPerformed
     // Variables declaration - do not modify//GEN-BEGIN:variables

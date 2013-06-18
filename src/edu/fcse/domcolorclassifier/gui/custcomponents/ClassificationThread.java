@@ -3,6 +3,7 @@ package edu.fcse.domcolorclassifier.gui.custcomponents;
 import edu.fcse.domcolorclassifier.ClassificationResult;
 import edu.fcse.domcolorclassifier.Classificator;
 import edu.fcse.domcolorclassifier.gui.ClassificationFrame;
+import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
@@ -11,34 +12,34 @@ import java.util.List;
  * @author Blagoj Atanasovski
  */
 public class ClassificationThread extends Thread {
-    
+
     private ClassificationFrame frame;
     private Classificator c;
     private boolean shouldContinue;
     private int currentFile;
-    
+
     public ClassificationThread(ClassificationFrame frame, Classificator c) {
         this.frame = frame;
         this.c = c;
         currentFile = 0;
         setShouldClassify(true);
     }
-    
+
     public ClassificationThread(ClassificationFrame frame, Classificator c, int continueFrom) {
         this.frame = frame;
         this.c = c;
         currentFile = continueFrom;
         setShouldClassify(true);
     }
-    
+
     public final synchronized void setShouldClassify(boolean should) {
         shouldContinue = should;
     }
-    
+
     public synchronized boolean getShouldClassify() {
         return shouldContinue;
     }
-    
+
     @Override
     public void run() {
         boolean cont = false;
@@ -47,12 +48,14 @@ public class ClassificationThread extends Thread {
             cont = currentFile < files.size();
             if (getShouldClassify()) {
                 try {
-                    
+
                     if (cont) {
-                        frame.updateTxtRezPanel("Working on file: \n" + files.get(currentFile) + "\nPlease wait...");
+                        String fileName = files.get(currentFile);
+                        fileName = fileName.substring(fileName.lastIndexOf(File.separatorChar));
+                        frame.updateTxtRezPanel("Working on file: \n" + fileName + "\nPlease wait...");
                         ClassificationResult rez = c.classifyFile(files.get(currentFile), true);
                         frame.updateTxtRezPanel(rez);
-                        
+
                     } else {
                         setShouldClassify(false);
                     }
@@ -66,6 +69,6 @@ public class ClassificationThread extends Thread {
         } while (getShouldClassify() && cont);
         setShouldClassify(false);
         frame.setDone();
-        
+
     }
 }
