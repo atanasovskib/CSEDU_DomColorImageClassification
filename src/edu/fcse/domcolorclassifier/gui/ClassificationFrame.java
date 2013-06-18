@@ -6,6 +6,11 @@ import edu.fcse.domcolorclassifier.MethodToApply;
 import edu.fcse.domcolorclassifier.algorithms.AlgorithmToApply;
 import edu.fcse.domcolorclassifier.colorutils.CustColor;
 import edu.fcse.domcolorclassifier.gui.custcomponents.ClassificationThread;
+import edu.fcse.domcolorclassifier.gui.custcomponents.FrameSizeChangeListener;
+import edu.fcse.domcolorclassifier.gui.custcomponents.LabelSizeChangeListener;
+import edu.fcse.domcolorclassifier.gui.custcomponents.ThumbnailClickListener;
+import java.awt.Dimension;
+import java.awt.Toolkit;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -29,9 +34,17 @@ public class ClassificationFrame extends javax.swing.JFrame {
     private MethodToApply method;
     private AlgorithmToApply algor;
     private boolean isDone = false;
+    private FrameSizeChangeListener sizeListener;
+    private LabelSizeChangeListener labelList;
 
     public ClassificationFrame(File initFolder, CustColor.ColorSpace space, List<CustColor> centers, AlgorithmToApply algo, MethodToApply meth) throws IOException {
         initComponents();
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        double maxWid = screenSize.getWidth() / 2;
+        double maxHei = screenSize.getHeight() / 2;
+        largePreviewLabel.setMaximumSize(new Dimension((int) maxWid, (int) maxHei));
+        this.addComponentListener(sizeListener = new FrameSizeChangeListener(this, largePreviewLabel));
+        labelList = new LabelSizeChangeListener(null, largePreviewLabel);
         classificator = new Classificator(initFolder, space, centers, algo, meth);
         List<String> filesToBeClassified = classificator.getFilesForClassification();
         DefaultListModel listModel = new DefaultListModel();
@@ -381,6 +394,7 @@ public class ClassificationFrame extends javax.swing.JFrame {
 
     private void popupVisualizeMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_popupVisualizeMenuItemActionPerformed
         jTabbedPane1.setSelectedIndex(1);
+
         java.awt.GridLayout layout = new java.awt.GridLayout(1, 0);
         layout.setHgap(10);
         thumnailHolderPanel.removeAll();
@@ -390,9 +404,12 @@ public class ClassificationFrame extends javax.swing.JFrame {
                 classificator.getFilesForClassification().get(datasetList.getSelectedIndex()), centers);
         BufferedImage[] thumbs = helper.getThumbs();
         String[] labels = helper.getThumbLabels();
+        BufferedImage[] originals = helper.getColloredForCenter();
         for (int i = 0; i < thumbs.length; i++) {
             JLabel toAdd = new JLabel(new ImageIcon(thumbs[i]));
             toAdd.setBorder(javax.swing.BorderFactory.createTitledBorder(labels[i]));
+            toAdd.addMouseListener(new ThumbnailClickListener(sizeListener, labelList, originals[i], largePreviewLabel));
+
             thumnailHolderPanel.add(toAdd);
         }
 

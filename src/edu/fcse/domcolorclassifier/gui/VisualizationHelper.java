@@ -40,7 +40,7 @@ public class VisualizationHelper {
     private final int THUMB_HEIGHT = 110;
     private static VisualizationHelper instance;
     private BufferedImage originalFile;
-    private Map<CustColor, BufferedImage> colloredForCenter;
+    private BufferedImage[] colloredForCenter;
     private BufferedImage[] thumbs;
     private String originalFilename;
     private List<CustColor> gravCenters;
@@ -51,7 +51,7 @@ public class VisualizationHelper {
         return originalFile;
     }
 
-    public Map<CustColor, BufferedImage> getColloredForCenter() {
+    public BufferedImage[] getColloredForCenter() {
         return colloredForCenter;
     }
 
@@ -84,7 +84,7 @@ public class VisualizationHelper {
         } else {
             algo = new AddToMultipleCentersMaxDistAlgorithmVIZ();
         }
-        colloredForCenter = new HashMap<>();
+        colloredForCenter = new BufferedImage[gravCenters.size() + 1];
         this.gravCenters = gravCenters;
         originalFilename = fileName;
         frame.notifyVizuStarted();
@@ -102,11 +102,12 @@ public class VisualizationHelper {
             thumbs = new BufferedImage[map.size() + 1];
             thumbs[0] = ImageTools.getScaledImage(originalFile, (int) (originalFile.getWidth() * proc), THUMB_HEIGHT);
             thumbLabels[0] = "Original";
+            colloredForCenter[0] = originalFile;
             for (CustColor c : map.keySet()) {
                 File newFile = new File("tmp_" + i);
                 copyFile(origFile, newFile);
                 BufferedImage tmp = ImageIO.read(newFile);
-                colloredForCenter.put(c, tmp);
+
                 Iterator<int[]> ite = map.get(c).iterator();
                 while (ite.hasNext()) {
                     int[] next = ite.next();
@@ -116,6 +117,7 @@ public class VisualizationHelper {
                 }
                 proc = ((double) THUMB_HEIGHT) / tmp.getHeight();
                 thumbs[i] = ImageTools.getScaledImage(tmp, (int) (tmp.getWidth() * proc), THUMB_HEIGHT);
+                colloredForCenter[i] = tmp;
                 thumbLabels[i] = c.getName();
                 i++;
             }
