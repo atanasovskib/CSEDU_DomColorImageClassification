@@ -10,7 +10,9 @@ import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.DefaultListModel;
@@ -55,8 +57,31 @@ public class ClassificationFrame extends javax.swing.JFrame {
         largePreviewLabel.setText("Visualization done. Click on the Thumbnails to view results");
     }
 
+    private String getMessageForDone() {
+        StringBuilder builder = new StringBuilder();
+        builder.append("Done\n");
+        List<ClassificationResult> results = classificator.getClassifiedFiles();
+        int numFiles = results.size();
+        builder.append("Classified files: ").append(numFiles);
+        builder.append("\n");
+        Map<CustColor, Integer> kolku = new HashMap<>();
+        for (ClassificationResult cr : results) {
+            CustColor key = cr.getClassifiedAs();
+            if (!kolku.containsKey(key)) {
+                kolku.put(key, 1);
+            } else {
+                kolku.put(key, kolku.get(key) + 1);
+            }
+        }
+        for (CustColor cc : kolku.keySet()) {
+            builder.append(cc.getName());
+            builder.append(": ").append(kolku.get(cc)).append("\n");
+        }
+        return builder.toString();
+    }
+
     public void setDone() {
-        rezTextArea.append("\n Done\n");
+        rezTextArea.setText(getMessageForDone());
     }
 
     public synchronized void updateTxtRezPanel(String message) {
@@ -64,6 +89,7 @@ public class ClassificationFrame extends javax.swing.JFrame {
             rezTextArea.append(message);
             rezTextArea.append("\n----------------------------\n");
         }
+        rezTextArea.append(getMessageForDone());
     }
 
     public synchronized void updateTxtRezPanel(ClassificationResult result) {
@@ -74,10 +100,11 @@ public class ClassificationFrame extends javax.swing.JFrame {
             text.append("\n Classified as: ");
             text.append(result.getClassifiedAs().getName());
             text.append("\nValues: ");
-            text.append(result.getCenterValues().toString());
+            text.append(result.getCenterValuesAsString());
             text.append("\n-------------------------------\n");
 
             rezTextArea.append(text.toString());
+
         }
 
     }
@@ -296,6 +323,8 @@ public class ClassificationFrame extends javax.swing.JFrame {
         for (ClassificationResult result : classificator.getClassifiedFiles()) {
             updateTxtRezPanel(result);
         }
+        if (isDone) {
+        }
     }//GEN-LAST:event_showAllButtonActionPerformed
 
     private void startMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_startMenuItemActionPerformed
@@ -303,12 +332,13 @@ public class ClassificationFrame extends javax.swing.JFrame {
         isDone = false;
         if (cThread != null) {
             cThread.setShouldClassify(false);
+            try {
+                cThread.join();
+            } catch (InterruptedException ex) {
+                System.out.println("Old classification thread was interrupted. Starting new one");
+            }
         }
-        try {
-            cThread.join();
-        } catch (InterruptedException ex) {
-            System.out.println("Old classification thread was interrupted. Starting new one");
-        }
+
         cThread = new ClassificationThread(this, classificator);
         cThread.start();
         rezTextArea.setText("Working... Please wait");

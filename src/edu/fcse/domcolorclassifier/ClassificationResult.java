@@ -50,6 +50,15 @@ public class ClassificationResult {
         return centerValues;
     }
 
+    public String getCenterValuesAsString() {
+        StringBuilder sb = new StringBuilder();
+        for (CustColor cc : centerValues.keySet()) {
+            sb.append(cc.getName()).append(":").append(centerValues.get(cc));
+            sb.append("\n");
+        }
+        return sb.toString();
+    }
+
     public void setCenterValues(Map<CustColor, Double> centerValues) {
         this.centerValues = centerValues;
     }
