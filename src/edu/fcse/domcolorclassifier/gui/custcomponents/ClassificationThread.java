@@ -63,6 +63,7 @@ public class ClassificationThread extends Thread {
                 } catch (IOException ex) {
                     System.err.println(ex.getMessage());
                     frame.updateTxtRezPanel("Error while procesing file: " + files.get(currentFile));
+                    currentFile++;
                     continue;
                 }
             }

@@ -151,8 +151,13 @@ public class ClassificationFrame extends javax.swing.JFrame {
         });
         jPopupMenu1.add(popupVisualizeMenuItem);
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("DomColorClassification - Classification");
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowClosing(java.awt.event.WindowEvent evt) {
+                formWindowClosing(evt);
+            }
+        });
 
         jLabel1.setLabelFor(datasetScrollPane);
         jLabel1.setText("Data set");
@@ -244,7 +249,7 @@ public class ClassificationFrame extends javax.swing.JFrame {
                     .addGroup(visualRezPanelLayout.createSequentialGroup()
                         .addComponent(imageDetailsScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 205, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(thumbnailsScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 265, Short.MAX_VALUE)))
+                        .addComponent(thumbnailsScrollPane)))
                 .addContainerGap())
         );
         visualRezPanelLayout.setVerticalGroup(
@@ -253,7 +258,7 @@ public class ClassificationFrame extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(visualRezPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(imageDetailsScrollPane)
-                    .addComponent(thumbnailsScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 153, Short.MAX_VALUE))
+                    .addComponent(thumbnailsScrollPane))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(largePreviewLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 187, Short.MAX_VALUE)
                 .addContainerGap())
@@ -392,6 +397,13 @@ public class ClassificationFrame extends javax.swing.JFrame {
 
         thumnailHolderPanel.repaint();
     }//GEN-LAST:event_popupVisualizeMenuItemActionPerformed
+
+    private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
+        if (cThread != null) {
+            cThread.setShouldClassify(false);
+            cThread.interrupt();
+        }
+    }//GEN-LAST:event_formWindowClosing
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenu cmdMenu;
     private javax.swing.JList datasetList;

@@ -1,17 +1,9 @@
 package edu.fcse.domcolorclassifier;
 
-import java.awt.color.CMMException;
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-
-import javax.imageio.ImageIO;
-
-import edu.fcse.domcolorclassifier.algorithms.visualization.AddToMultipleCentersAlgorithmVIZ;
 import edu.fcse.domcolorclassifier.algorithms.AlgorithmToApply;
 import edu.fcse.domcolorclassifier.colorutils.ColorConvertor;
 import edu.fcse.domcolorclassifier.colorutils.CustColor;
