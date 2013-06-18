@@ -226,7 +226,7 @@
                           <Group type="102" attributes="0">
                               <Component id="imageDetailsScrollPane" min="-2" pref="205" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
-                              <Component id="thumbnailsScrollPane" pref="265" max="32767" attributes="0"/>
+                              <Component id="thumbnailsScrollPane" max="32767" attributes="0"/>
                           </Group>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
@@ -239,7 +239,7 @@
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" max="-2" attributes="0">
                           <Component id="imageDetailsScrollPane" max="32767" attributes="0"/>
-                          <Component id="thumbnailsScrollPane" pref="153" max="32767" attributes="0"/>
+                          <Component id="thumbnailsScrollPane" max="32767" attributes="0"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="largePreviewLabel" pref="187" max="32767" attributes="0"/>

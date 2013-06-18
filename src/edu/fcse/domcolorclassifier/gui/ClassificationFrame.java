@@ -89,22 +89,23 @@ public class ClassificationFrame extends javax.swing.JFrame {
             rezTextArea.append(message);
             rezTextArea.append("\n----------------------------\n");
         }
-        rezTextArea.append(getMessageForDone());
+    }
+
+    private String getStringFromResult(ClassificationResult result) {
+        StringBuilder text = new StringBuilder();
+        text.append("File: ");
+        text.append(result.getFileName().substring(result.getFileName().lastIndexOf(File.separatorChar) + 1));
+        text.append("\nClassified as: ");
+        text.append(result.getClassifiedAs().getName());
+        text.append("\nValues: \n");
+        text.append(result.getCenterValuesAsString());
+        text.append("\n-------------------------------\n");
+        return text.toString();
     }
 
     public synchronized void updateTxtRezPanel(ClassificationResult result) {
         if (jTabbedPane1.getSelectedIndex() == 0 && !clickOnList) {
-            StringBuilder text = new StringBuilder();
-            text.append("File: ");
-            text.append(result.getFileName().substring(result.getFileName().lastIndexOf(File.separatorChar) + 1));
-            text.append("\n Classified as: ");
-            text.append(result.getClassifiedAs().getName());
-            text.append("\nValues: ");
-            text.append(result.getCenterValuesAsString());
-            text.append("\n-------------------------------\n");
-
-            rezTextArea.append(text.toString());
-
+            rezTextArea.append(getStringFromResult(result));
         }
 
     }
@@ -324,6 +325,7 @@ public class ClassificationFrame extends javax.swing.JFrame {
             updateTxtRezPanel(result);
         }
         if (isDone) {
+            rezTextArea.append(getMessageForDone());
         }
     }//GEN-LAST:event_showAllButtonActionPerformed
 
@@ -368,15 +370,7 @@ public class ClassificationFrame extends javax.swing.JFrame {
                 rezTextArea.setText("File not yet classified");
             } else {
                 ClassificationResult cr = res.get(index);
-                StringBuilder text = new StringBuilder();
-                text.append("File: ");
-                text.append(cr.getFileName().substring(cr.getFileName().lastIndexOf(File.separatorChar) + 1));
-                text.append("\n Classified as: ");
-                text.append(cr.getClassifiedAs().getName());
-                text.append("\nValues: ");
-                text.append(cr.getCenterValues().toString());
-                text.append("\n-------------------------------\n");
-                rezTextArea.setText(text.toString());
+                rezTextArea.setText(getStringFromResult(cr));
             }
         }
     }//GEN-LAST:event_datasetListMouseClicked

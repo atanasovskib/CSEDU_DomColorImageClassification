@@ -16,6 +16,7 @@ import edu.fcse.domcolorclassifier.algorithms.visualization.EqDistCountDoubleAlg
 import edu.fcse.domcolorclassifier.colorutils.CustColor;
 import edu.fcse.domcolorclassifier.gui.custcomponents.ImageTools;
 import java.awt.Color;
+import java.awt.color.CMMException;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileInputStream;
@@ -113,7 +114,7 @@ public class VisualizationHelper {
                 i++;
             }
             frame.notifyVizuEnd();
-        } catch (IOException ex) {
+        } catch (IOException | CMMException ex) {
             frame.notifyVizuEnd();
             Logger.getLogger(VisualizationHelper.class.getName()).log(Level.SEVERE, null, ex);
         }

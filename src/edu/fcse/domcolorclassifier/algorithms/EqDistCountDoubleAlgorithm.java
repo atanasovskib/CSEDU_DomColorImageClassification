@@ -13,6 +13,7 @@ import edu.fcse.domcolorclassifier.MethodToApply;
 import edu.fcse.domcolorclassifier.colorutils.CustColor;
 import edu.fcse.domcolorclassifier.functions.distance.DistanceFunction;
 import edu.fcse.domcolorclassifier.functions.weight.WeightFunction;
+import java.awt.color.CMMException;
 import java.io.File;
 import java.io.IOException;
 import javax.imageio.ImageIO;
@@ -26,76 +27,79 @@ import javax.imageio.ImageIO;
  * multiplied by the result of the weight function otherwise the value added to
  * the closest centers is W/R where R=the distance from the color of the pixel
  * and the color of the grav. center and W is the result of the weight function
- * 
+ *
  * @author Blagoj Atansovski
- * 
+ *
  */
 public class EqDistCountDoubleAlgorithm implements AlgorithmToApply {
 
-	@Override
-	public ClassificationResult classifyImage(File fileToClassify,
-			MethodToApply method, List<CustColor> gravityCenters) throws IOException {
-		BufferedImage imageToClassify=ImageIO.read(fileToClassify);
-		HashMap<CustColor, Double> colorAppearance = new HashMap<>();
-		for (CustColor cc : gravityCenters) {
-			colorAppearance.put(cc, 0.0);
-		}
+    @Override
+    public ClassificationResult classifyImage(File fileToClassify,
+            MethodToApply method, List<CustColor> gravityCenters) throws IOException {
+        try {
+            BufferedImage imageToClassify = ImageIO.read(fileToClassify);
+            HashMap<CustColor, Double> colorAppearance = new HashMap<>();
+            for (CustColor cc : gravityCenters) {
+                colorAppearance.put(cc, 0.0);
+            }
 
-		ImgData imgData = new ImgData(imageToClassify);
-		DistanceFunction distanceF = method.getDistanceFunction();
-		WeightFunction weiF = method.getWeightFunction();
-		float[][][] pixels = method.getSmooth().smooth(imgData.getRgbdata());
-		float[][][] pixelsD = method.convertToColorSpace(pixels);
-		int width = imageToClassify.getWidth();
-		int height = imageToClassify.getHeight();
-		List<CustColor> minimums = new ArrayList<>(
-				gravityCenters.size());
-		for (int i = 0; i < height; i++) {
-			for (int j = 0; j < width; j++) {
-				minimums.clear();
-				minimums.add(gravityCenters.get(0));
-				double minDistance = distanceF.getDistance(minimums.get(0)
-						.getValues(), pixelsD[i][j]);
-				for (int k = 1; k < gravityCenters.size(); k++) {
-					CustColor curr = gravityCenters.get(k);
-					float[] valuesCurr = curr.getValues();
-					double currDistance = distanceF.getDistance(valuesCurr,
-							pixelsD[i][j]);
-					if (minDistance > currDistance) {
-						minDistance = currDistance;
-						minimums.clear();
-						minimums.add(curr);
-					} else if (minDistance == currDistance) {
-						minimums.add(curr);
-					}
-				}
-				double weight = weiF.getWeight(i, j, height / 2, width / 2);
-				double R;
-				if (method.getFixedValue()) {
-					R = 1;
-				} else {
-					R = 1 / minDistance;
-				}
-				weight *= R;
-				for (CustColor minColor : minimums) {
-					colorAppearance.put(minColor, colorAppearance.get(minColor)
-							+ weight);
-				}
+            ImgData imgData = new ImgData(imageToClassify);
+            DistanceFunction distanceF = method.getDistanceFunction();
+            WeightFunction weiF = method.getWeightFunction();
+            float[][][] pixels = method.getSmooth().smooth(imgData.getRgbdata());
+            float[][][] pixelsD = method.convertToColorSpace(pixels);
+            int width = imageToClassify.getWidth();
+            int height = imageToClassify.getHeight();
+            List<CustColor> minimums = new ArrayList<>(
+                    gravityCenters.size());
+            for (int i = 0; i < height; i++) {
+                for (int j = 0; j < width; j++) {
+                    minimums.clear();
+                    minimums.add(gravityCenters.get(0));
+                    double minDistance = distanceF.getDistance(minimums.get(0)
+                            .getValues(), pixelsD[i][j]);
+                    for (int k = 1; k < gravityCenters.size(); k++) {
+                        CustColor curr = gravityCenters.get(k);
+                        float[] valuesCurr = curr.getValues();
+                        double currDistance = distanceF.getDistance(valuesCurr,
+                                pixelsD[i][j]);
+                        if (minDistance > currDistance) {
+                            minDistance = currDistance;
+                            minimums.clear();
+                            minimums.add(curr);
+                        } else if (minDistance == currDistance) {
+                            minimums.add(curr);
+                        }
+                    }
+                    double weight = weiF.getWeight(i, j, height / 2, width / 2);
+                    double R;
+                    if (method.getFixedValue()) {
+                        R = 1;
+                    } else {
+                        R = 1 / minDistance;
+                    }
+                    weight *= R;
+                    for (CustColor minColor : minimums) {
+                        colorAppearance.put(minColor, colorAppearance.get(minColor)
+                                + weight);
+                    }
 
-			}
-		}
+                }
+            }
 
-		CustColor max = gravityCenters.get(0);
-		System.out.println(colorAppearance.toString());
-		double maxAppearence = colorAppearance.get(max);
-		for (CustColor cc : colorAppearance.keySet()) {
-			if (colorAppearance.get(cc) > maxAppearence) {
-				max = cc;
-				maxAppearence = colorAppearance.get(cc);
-			}
-		}
-		ClassificationResult result = new ClassificationResult(fileToClassify.getAbsolutePath(), max, colorAppearance, width, height);
-                return result;
-	}
-
+            CustColor max = gravityCenters.get(0);
+            System.out.println(colorAppearance.toString());
+            double maxAppearence = colorAppearance.get(max);
+            for (CustColor cc : colorAppearance.keySet()) {
+                if (colorAppearance.get(cc) > maxAppearence) {
+                    max = cc;
+                    maxAppearence = colorAppearance.get(cc);
+                }
+            }
+            ClassificationResult result = new ClassificationResult(fileToClassify.getAbsolutePath(), max, colorAppearance, width, height);
+            return result;
+        } catch (CMMException ex) {
+            throw new IOException("Could not read file: " + fileToClassify);
+        }
+    }
 }

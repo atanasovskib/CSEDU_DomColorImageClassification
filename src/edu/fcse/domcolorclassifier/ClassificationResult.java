@@ -53,6 +53,7 @@ public class ClassificationResult {
     public String getCenterValuesAsString() {
         StringBuilder sb = new StringBuilder();
         for (CustColor cc : centerValues.keySet()) {
+            sb.append("  ");
             sb.append(cc.getName()).append(":").append(centerValues.get(cc));
             sb.append("\n");
         }
