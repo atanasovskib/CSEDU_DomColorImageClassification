@@ -37,7 +37,7 @@ import javax.imageio.ImageIO;
  */
 public class VisualizationHelper {
 
-    private final int THUMB_HEIGHT = 130;
+    private final int THUMB_HEIGHT = 110;
     private static VisualizationHelper instance;
     private BufferedImage originalFile;
     private Map<CustColor, BufferedImage> colloredForCenter;
@@ -45,6 +45,7 @@ public class VisualizationHelper {
     private String originalFilename;
     private List<CustColor> gravCenters;
     private AlgorithmToApplyWithVisualization algo;
+    private String[] thumbLabels;
 
     public BufferedImage getOriginalFile() {
         return originalFile;
@@ -64,6 +65,10 @@ public class VisualizationHelper {
 
     public BufferedImage[] getThumbs() {
         return thumbs;
+    }
+
+    public String[] getThumbLabels() {
+        return thumbLabels;
     }
 
     private VisualizationHelper(ClassificationFrame frame, MethodToApply method, AlgorithmToApply algorithm, String fileName, List<CustColor> gravCenters) {
@@ -93,13 +98,13 @@ public class VisualizationHelper {
             double proc = ((double) THUMB_HEIGHT) / originalFile.getHeight();
             Map<CustColor, List<int[]>> map = rezu.getPixelsToBeColored();
             int i = 1;
-
+            thumbLabels = new String[map.size() + 1];
             thumbs = new BufferedImage[map.size() + 1];
             thumbs[0] = ImageTools.getScaledImage(originalFile, (int) (originalFile.getWidth() * proc), THUMB_HEIGHT);
+            thumbLabels[0] = "Original";
             for (CustColor c : map.keySet()) {
                 File newFile = new File("tmp_" + i);
                 copyFile(origFile, newFile);
-
                 BufferedImage tmp = ImageIO.read(newFile);
                 colloredForCenter.put(c, tmp);
                 Iterator<int[]> ite = map.get(c).iterator();
@@ -111,6 +116,7 @@ public class VisualizationHelper {
                 }
                 proc = ((double) THUMB_HEIGHT) / tmp.getHeight();
                 thumbs[i] = ImageTools.getScaledImage(tmp, (int) (tmp.getWidth() * proc), THUMB_HEIGHT);
+                thumbLabels[i] = c.getName();
                 i++;
             }
             frame.notifyVizuEnd();

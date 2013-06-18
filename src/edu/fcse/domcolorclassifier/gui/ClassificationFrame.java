@@ -13,8 +13,6 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
@@ -208,12 +206,13 @@ public class ClassificationFrame extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(showAllButton)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 317, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 368, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
         jTabbedPane1.addTab("Textual results", textRezPanel);
 
+        imageDetailsScrollPane.setBorder(null);
         imageDetailsScrollPane.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 
         imageDetailsVizLabel.setText("Image Details go here");
@@ -230,7 +229,7 @@ public class ClassificationFrame extends javax.swing.JFrame {
         );
         thumnailHolderPanelLayout.setVerticalGroup(
             thumnailHolderPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 151, Short.MAX_VALUE)
+            .addGap(0, 163, Short.MAX_VALUE)
         );
 
         thumbnailsScrollPane.setViewportView(thumnailHolderPanel);
@@ -256,11 +255,11 @@ public class ClassificationFrame extends javax.swing.JFrame {
             visualRezPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(visualRezPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(visualRezPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(imageDetailsScrollPane)
-                    .addComponent(thumbnailsScrollPane))
+                .addGroup(visualRezPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(imageDetailsScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 153, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(thumbnailsScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(largePreviewLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 187, Short.MAX_VALUE)
+                .addComponent(largePreviewLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 226, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -309,7 +308,7 @@ public class ClassificationFrame extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jTabbedPane1)
+                    .addComponent(jTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 447, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -390,9 +389,11 @@ public class ClassificationFrame extends javax.swing.JFrame {
         VisualizationHelper helper = VisualizationHelper.init(this, method, algor,
                 classificator.getFilesForClassification().get(datasetList.getSelectedIndex()), centers);
         BufferedImage[] thumbs = helper.getThumbs();
-        for (BufferedImage bi : thumbs) {
-            JLabel l1 = new javax.swing.JLabel(new ImageIcon(bi));
-            thumnailHolderPanel.add(l1);
+        String[] labels = helper.getThumbLabels();
+        for (int i = 0; i < thumbs.length; i++) {
+            JLabel toAdd = new JLabel(new ImageIcon(thumbs[i]));
+            toAdd.setBorder(javax.swing.BorderFactory.createTitledBorder(labels[i]));
+            thumnailHolderPanel.add(toAdd);
         }
 
         thumnailHolderPanel.repaint();

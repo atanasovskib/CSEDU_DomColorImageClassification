@@ -98,7 +98,7 @@
           <Group type="102" alignment="0" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="jTabbedPane1" max="32767" attributes="0"/>
+                  <Component id="jTabbedPane1" pref="447" max="32767" attributes="0"/>
                   <Group type="102" attributes="0">
                       <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
@@ -176,7 +176,7 @@
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="showAllButton" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="jScrollPane1" pref="317" max="32767" attributes="0"/>
+                      <Component id="jScrollPane1" pref="368" max="32767" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                   </Group>
               </Group>
@@ -240,12 +240,12 @@
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="0" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                          <Component id="imageDetailsScrollPane" max="32767" attributes="0"/>
-                          <Component id="thumbnailsScrollPane" max="32767" attributes="0"/>
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Component id="imageDetailsScrollPane" min="-2" pref="153" max="-2" attributes="0"/>
+                          <Component id="thumbnailsScrollPane" min="-2" pref="165" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="largePreviewLabel" pref="187" max="32767" attributes="0"/>
+                      <Component id="largePreviewLabel" pref="226" max="32767" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                   </Group>
               </Group>
@@ -254,6 +254,9 @@
           <SubComponents>
             <Container class="javax.swing.JScrollPane" name="imageDetailsScrollPane">
               <Properties>
+                <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+                  <Border info="null"/>
+                </Property>
                 <Property name="horizontalScrollBarPolicy" type="int" value="31"/>
               </Properties>
 
@@ -284,7 +287,7 @@
                     </DimensionLayout>
                     <DimensionLayout dim="1">
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <EmptySpace min="0" pref="151" max="32767" attributes="0"/>
+                          <EmptySpace min="0" pref="163" max="32767" attributes="0"/>
                       </Group>
                     </DimensionLayout>
                   </Layout>

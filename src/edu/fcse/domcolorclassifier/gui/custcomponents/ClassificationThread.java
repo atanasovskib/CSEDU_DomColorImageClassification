@@ -51,7 +51,7 @@ public class ClassificationThread extends Thread {
 
                     if (cont) {
                         String fileName = files.get(currentFile);
-                        fileName = fileName.substring(fileName.lastIndexOf(File.separatorChar));
+                        fileName = fileName.substring(fileName.lastIndexOf(File.separatorChar)+1);
                         frame.updateTxtRezPanel("Working on file: \n" + fileName + "\nPlease wait...");
                         ClassificationResult rez = c.classifyFile(files.get(currentFile), true);
                         frame.updateTxtRezPanel(rez);
