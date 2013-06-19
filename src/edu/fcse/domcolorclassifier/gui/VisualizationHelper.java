@@ -87,11 +87,13 @@ public class VisualizationHelper {
         colloredForCenter = new BufferedImage[gravCenters.size() + 1];
         this.gravCenters = gravCenters;
         originalFilename = fileName;
+        String stringRez = "<html><b>Name:<b> " + fileName.substring(fileName.lastIndexOf(File.separatorChar)+1) + "<br/>";
         frame.notifyVizuStarted();
         try {
             ClassificationResultWithVisualization rezu = algo.classifyImage(new File(originalFilename),
                     method, gravCenters);
-
+            stringRez += "<b>Classified as:</b> " + rezu.getClassifiedAs().getName() + "<br/>";
+            stringRez += "<b>Size: </b>" + rezu.getWidth() + ":" + rezu.getHeight();
             File origFile = new File(originalFilename);
 
             originalFile = ImageIO.read(origFile);
@@ -122,6 +124,7 @@ public class VisualizationHelper {
                 i++;
             }
             frame.notifyVizuEnd();
+            frame.updateVizFileInfo(stringRez);
         } catch (IOException | CMMException ex) {
             frame.notifyVizuEnd();
             Logger.getLogger(VisualizationHelper.class.getName()).log(Level.SEVERE, null, ex);

@@ -61,6 +61,9 @@ public class AddToMultipleCentersAlgorithmVIZ implements AlgorithmToApplyWithVis
                         if (currDistance <= THRESHHOLD) {
                             magic.get(curr).add(new int[]{j, i});
                         }
+                        if (currDistance == 0) {
+                            currDistance = 1;
+                        }
                         double R = 1 / currDistance;
                         colorAppearance.put(curr, colorAppearance.get(curr)
                                 + weight * R);
