@@ -87,7 +87,7 @@ public class VisualizationHelper {
         colloredForCenter = new BufferedImage[gravCenters.size() + 1];
         this.gravCenters = gravCenters;
         originalFilename = fileName;
-        String stringRez = "<html><b>Name:<b> " + fileName.substring(fileName.lastIndexOf(File.separatorChar)+1) + "<br/>";
+        String stringRez = "<html><b>Name:<b> " + fileName.substring(fileName.lastIndexOf(File.separatorChar) + 1) + "<br/>";
         frame.notifyVizuStarted();
         try {
             ClassificationResultWithVisualization rezu = algo.classifyImage(new File(originalFilename),
@@ -114,6 +114,11 @@ public class VisualizationHelper {
                 while (ite.hasNext()) {
                     int[] next = ite.next();
                     float[] values = c.getValues();
+
+                    Color alreadyThereColor = new Color(tmp.getRGB(next[0], next[1]));
+                    values[0] = Math.abs(values[0] - alreadyThereColor.getRed());
+                    values[1] = Math.abs(values[1] - alreadyThereColor.getGreen());
+                    values[2] = Math.abs(values[2] - alreadyThereColor.getBlue());
                     Color cc = new Color((int) values[0], (int) values[1], (int) values[2]);
                     tmp.setRGB(next[0], next[1], cc.getRGB());
                 }
