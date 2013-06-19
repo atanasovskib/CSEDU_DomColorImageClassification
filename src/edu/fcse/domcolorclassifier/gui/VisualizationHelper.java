@@ -14,6 +14,8 @@ import edu.fcse.domcolorclassifier.algorithms.visualization.BasicAlgorithmVIZ;
 import edu.fcse.domcolorclassifier.algorithms.visualization.BasicWithDiscardDistanceAlgorithmVIZ;
 import edu.fcse.domcolorclassifier.algorithms.visualization.EqDistCountDoubleAlgorithmVIZ;
 import edu.fcse.domcolorclassifier.colorutils.CustColor;
+import edu.fcse.domcolorclassifier.functions.weight.ExpWeightFunction;
+import edu.fcse.domcolorclassifier.functions.weight.ReciWeightFunction;
 import edu.fcse.domcolorclassifier.functions.weight.WeightFunction;
 import edu.fcse.domcolorclassifier.gui.custcomponents.ImageTools;
 import java.awt.Color;
@@ -115,7 +117,7 @@ public class VisualizationHelper {
                 int cenX = tmp.getWidth() / 2;
                 int cenY = tmp.getHeight() / 2;
                 Iterator<int[]> ite = map.get(c).iterator();
-                double r = Math.min(tmp.getWidth(), tmp.getHeight()) / 2;
+                double r = Math.max(tmp.getWidth(), tmp.getHeight()) / 2;
 
                 while (ite.hasNext()) {
                     int[] next = ite.next();
@@ -126,19 +128,22 @@ public class VisualizationHelper {
                     Color alreadyThereColor = new Color(tmp.getRGB(next[0], next[1]));
                     //float ww = (float) wf.getWeight(next[0], next[1], cenX, cenY) * 20;
                     double delitel = 1;
-                    if (!(method.getWeightFunction() instanceof WeightFunction)) {
+
+                    if ((method.getWeightFunction() instanceof ReciWeightFunction) || (method.getWeightFunction() instanceof ExpWeightFunction)) {
                         if (rast < r) {
                             if (r != 0) {
-                                delitel = -rast / r + 1;
+                                delitel = -rast / (3 * r) + 1;
                             }
                         } else {
-                            delitel = 0;
+                            delitel = 0.3;
                         }
                     }
-                    values[0] = alreadyThereColor.getRed() + (float) (values[0] / 3 * delitel);
+                    // System.out.println("delitel: " + delitel);
+                    values[0] = alreadyThereColor.getRed() + (float) (values[0] / 2.5 * delitel);
                     if (values[0] > 255) {
                         values[0] = 255;
                     }
+
                     values[1] = alreadyThereColor.getGreen() + (float) (values[1] / 3 * delitel);
                     if (values[1] > 255) {
                         values[1] = 255;
@@ -147,7 +152,7 @@ public class VisualizationHelper {
                     if (values[2] > 255) {
                         values[2] = 255;
                     }
-
+                    //System.out.println(values[0] + " " + values[1] + " " + values[2]);
                     Color cc = new Color((int) values[0], (int) values[1], (int) values[2]);
                     tmp.setRGB(next[0], next[1], cc.getRGB());
                 }
