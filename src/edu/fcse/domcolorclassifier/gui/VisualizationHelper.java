@@ -117,7 +117,7 @@ public class VisualizationHelper {
                 int cenX = tmp.getWidth() / 2;
                 int cenY = tmp.getHeight() / 2;
                 Iterator<int[]> ite = map.get(c).iterator();
-                double r = Math.max(tmp.getWidth(), tmp.getHeight()) / 2;
+                double r = Math.sqrt(cenX * cenX + cenY * cenY);
 
                 while (ite.hasNext()) {
                     int[] next = ite.next();
@@ -138,7 +138,8 @@ public class VisualizationHelper {
                             delitel = 0.3;
                         }
                     }
-                    // System.out.println("delitel: " + delitel);
+                    System.out.println("x: " + next[0] + "y: " + next[1]
+                            + "delitel: " + delitel);
                     values[0] = alreadyThereColor.getRed() + (float) (values[0] / 2.5 * delitel);
                     if (values[0] > 255) {
                         values[0] = 255;
