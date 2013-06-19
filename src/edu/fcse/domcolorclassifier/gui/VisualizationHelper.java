@@ -14,6 +14,7 @@ import edu.fcse.domcolorclassifier.algorithms.visualization.BasicAlgorithmVIZ;
 import edu.fcse.domcolorclassifier.algorithms.visualization.BasicWithDiscardDistanceAlgorithmVIZ;
 import edu.fcse.domcolorclassifier.algorithms.visualization.EqDistCountDoubleAlgorithmVIZ;
 import edu.fcse.domcolorclassifier.colorutils.CustColor;
+import edu.fcse.domcolorclassifier.functions.weight.WeightFunction;
 import edu.fcse.domcolorclassifier.gui.custcomponents.ImageTools;
 import java.awt.Color;
 import java.awt.color.CMMException;
@@ -23,6 +24,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.channels.FileChannel;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -105,20 +107,47 @@ public class VisualizationHelper {
             thumbs[0] = ImageTools.getScaledImage(originalFile, (int) (originalFile.getWidth() * proc), THUMB_HEIGHT);
             thumbLabels[0] = "Original";
             colloredForCenter[0] = originalFile;
+            //WeightFunction wf = method.getWeightFunction();
             for (CustColor c : map.keySet()) {
                 File newFile = new File("tmp_" + i);
                 copyFile(origFile, newFile);
                 BufferedImage tmp = ImageIO.read(newFile);
-
+                int cenX = tmp.getWidth() / 2;
+                int cenY = tmp.getHeight() / 2;
                 Iterator<int[]> ite = map.get(c).iterator();
+                double r = Math.min(tmp.getWidth(), tmp.getHeight()) / 2;
+
                 while (ite.hasNext()) {
                     int[] next = ite.next();
-                    float[] values = c.getValues();
-
+                    float[] values = c.getValues().clone();
+                    int delx = cenX - next[0];
+                    int dely = cenY - next[1];
+                    double rast = Math.sqrt(delx * delx + dely * dely);
                     Color alreadyThereColor = new Color(tmp.getRGB(next[0], next[1]));
-                    values[0] = Math.abs(values[0] - alreadyThereColor.getRed());
-                    values[1] = Math.abs(values[1] - alreadyThereColor.getGreen());
-                    values[2] = Math.abs(values[2] - alreadyThereColor.getBlue());
+                    //float ww = (float) wf.getWeight(next[0], next[1], cenX, cenY) * 20;
+                    double delitel = 1;
+                    if (!(method.getWeightFunction() instanceof WeightFunction)) {
+                        if (rast < r) {
+                            if (r != 0) {
+                                delitel = -rast / r + 1;
+                            }
+                        } else {
+                            delitel = 0;
+                        }
+                    }
+                    values[0] = alreadyThereColor.getRed() + (float) (values[0] / 3 * delitel);
+                    if (values[0] > 255) {
+                        values[0] = 255;
+                    }
+                    values[1] = alreadyThereColor.getGreen() + (float) (values[1] / 3 * delitel);
+                    if (values[1] > 255) {
+                        values[1] = 255;
+                    }
+                    values[2] = alreadyThereColor.getBlue() + (float) (values[2] / 3 * delitel);
+                    if (values[2] > 255) {
+                        values[2] = 255;
+                    }
+
                     Color cc = new Color((int) values[0], (int) values[1], (int) values[2]);
                     tmp.setRGB(next[0], next[1], cc.getRGB());
                 }
