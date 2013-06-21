@@ -118,13 +118,13 @@ public class VisualizationHelper {
                 int cenY = tmp.getHeight() / 2;
                 Iterator<int[]> ite = map.get(c).iterator();
                 double r = Math.sqrt(cenX * cenX + cenY * cenY);
-
+                //double r = Math.min(tmp.getWidth(), tmp.getHeight());
                 while (ite.hasNext()) {
                     int[] next = ite.next();
                     float[] values = c.getValues().clone();
                     int delx = cenX - next[0];
                     int dely = cenY - next[1];
-                    double rast = Math.sqrt(delx * delx + dely * dely);
+                    double rast = 4 * Math.sqrt(delx * delx + dely * dely) / 5;
                     Color alreadyThereColor = new Color(tmp.getRGB(next[0], next[1]));
                     //float ww = (float) wf.getWeight(next[0], next[1], cenX, cenY) * 20;
                     double delitel = 1;
@@ -132,24 +132,23 @@ public class VisualizationHelper {
                     if ((method.getWeightFunction() instanceof ReciWeightFunction) || (method.getWeightFunction() instanceof ExpWeightFunction)) {
                         if (rast < r) {
                             if (r != 0) {
-                                delitel = -rast / (3 * r) + 1;
+                                delitel = -rast / r + 1;
                             }
                         } else {
-                            delitel = 0.3;
+                            delitel = 0;
                         }
                     }
-                    System.out.println("x: " + next[0] + "y: " + next[1]
-                            + "delitel: " + delitel);
-                    values[0] = alreadyThereColor.getRed() + (float) (values[0] / 2.5 * delitel);
+
+                    values[0] = alreadyThereColor.getRed() + (float) (values[0] / 1.75 * delitel);
                     if (values[0] > 255) {
                         values[0] = 255;
                     }
 
-                    values[1] = alreadyThereColor.getGreen() + (float) (values[1] / 3 * delitel);
+                    values[1] = alreadyThereColor.getGreen() + (float) (values[1] / 1.75 * delitel);
                     if (values[1] > 255) {
                         values[1] = 255;
                     }
-                    values[2] = alreadyThereColor.getBlue() + (float) (values[2] / 3 * delitel);
+                    values[2] = alreadyThereColor.getBlue() + (float) (values[2] / 1.75 * delitel);
                     if (values[2] > 255) {
                         values[2] = 255;
                     }

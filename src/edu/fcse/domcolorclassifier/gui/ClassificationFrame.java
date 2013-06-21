@@ -397,18 +397,19 @@ public class ClassificationFrame extends javax.swing.JFrame {
     private void popupVisualizeMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_popupVisualizeMenuItemActionPerformed
 
         jTabbedPane1.setSelectedIndex(1);
-        java.awt.GridLayout layout = new java.awt.GridLayout(1, 0);
-        layout.setHgap(10);
-        largePreviewLabel.setIcon(
-                new javax.swing.ImageIcon(
-                getClass().getResource("/images/loading_full.gif")));
-        thumnailHolderPanel.removeAll();
-        thumnailHolderPanel.setLayout(layout);
+
 
         Timer t = new Timer();
         t.schedule(new TimerTask() {
             @Override
             public void run() {
+                java.awt.GridLayout layout = new java.awt.GridLayout(1, 0);
+                layout.setHgap(10);
+                largePreviewLabel.setIcon(
+                        new javax.swing.ImageIcon(
+                        getClass().getResource("/images/loading_full.gif")));
+                thumnailHolderPanel.removeAll();
+                thumnailHolderPanel.setLayout(layout);
                 List<CustColor> centers = classificator.getGravityCenters();
                 String fileName = classificator.getFilesForClassification().get(datasetList.getSelectedIndex());
                 VisualizationHelper helper = VisualizationHelper.init(ClassificationFrame.this, method, algor,
@@ -422,13 +423,13 @@ public class ClassificationFrame extends javax.swing.JFrame {
                     toAdd.addMouseListener(new ThumbnailClickListener(sizeListener, labelList, originals[i], largePreviewLabel));
 
                     thumnailHolderPanel.add(toAdd);
+                    thumnailHolderPanel.repaint();
+                    ClassificationFrame.this.repaint();
                 }
             }
         }, 200);
 
 
-
-        thumnailHolderPanel.repaint();
     }//GEN-LAST:event_popupVisualizeMenuItemActionPerformed
     public void updateVizFileInfo(String info) {
         imageDetailsVizLabel.setText(info);
