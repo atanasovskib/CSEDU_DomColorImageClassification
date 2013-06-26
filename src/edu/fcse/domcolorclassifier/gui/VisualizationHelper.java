@@ -16,7 +16,6 @@ import edu.fcse.domcolorclassifier.algorithms.visualization.EqDistCountDoubleAlg
 import edu.fcse.domcolorclassifier.colorutils.CustColor;
 import edu.fcse.domcolorclassifier.functions.weight.ExpWeightFunction;
 import edu.fcse.domcolorclassifier.functions.weight.ReciWeightFunction;
-import edu.fcse.domcolorclassifier.functions.weight.WeightFunction;
 import edu.fcse.domcolorclassifier.gui.custcomponents.ImageTools;
 import java.awt.Color;
 import java.awt.color.CMMException;
@@ -26,8 +25,6 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.channels.FileChannel;
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;

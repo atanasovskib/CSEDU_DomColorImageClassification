@@ -3,15 +3,10 @@ package edu.fcse.domcolorclassifier.gui;
 import edu.fcse.domcolorclassifier.MethodToApply;
 import edu.fcse.domcolorclassifier.algorithms.AddToMultipleCentersAlgorithm;
 import edu.fcse.domcolorclassifier.algorithms.AddToMultipleCentersMaxDistAlgorithm;
-import edu.fcse.domcolorclassifier.algorithms.visualization.AddToMultipleCentersAlgorithmVIZ;
-import edu.fcse.domcolorclassifier.algorithms.visualization.AddToMultipleCentersMaxDistAlgorithmVIZ;
 import edu.fcse.domcolorclassifier.algorithms.AlgorithmToApply;
 import edu.fcse.domcolorclassifier.algorithms.BasicAlgorithm;
 import edu.fcse.domcolorclassifier.algorithms.BasicWithDiscardDistanceAlgorithm;
 import edu.fcse.domcolorclassifier.algorithms.EqDistCountDoubleAlgorithm;
-import edu.fcse.domcolorclassifier.algorithms.visualization.BasicAlgorithmVIZ;
-import edu.fcse.domcolorclassifier.algorithms.visualization.BasicWithDiscardDistanceAlgorithmVIZ;
-import edu.fcse.domcolorclassifier.algorithms.visualization.EqDistCountDoubleAlgorithmVIZ;
 import edu.fcse.domcolorclassifier.colorutils.CustColor;
 import edu.fcse.domcolorclassifier.functions.distance.DistanceFunction;
 import edu.fcse.domcolorclassifier.functions.distance.EuclideanDistanceFunction;
@@ -32,6 +27,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JComponent;
 import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
 
 /**
  * Form the sets up the parameters for the classifier and the input data set
@@ -101,6 +97,10 @@ public class InitFrame extends javax.swing.JFrame {
         jLabel12 = new javax.swing.JLabel();
         colorNameTextField = new javax.swing.JTextField();
         addColorButton = new javax.swing.JButton();
+        predefinedButtonRed = new javax.swing.JButton();
+        jLabel13 = new javax.swing.JLabel();
+        predefinedButtonGreen = new javax.swing.JButton();
+        predefinedButtonBlue = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("DomColorClassification - Init");
@@ -186,6 +186,7 @@ public class InitFrame extends javax.swing.JFrame {
         jSeparator1.setOrientation(javax.swing.SwingConstants.VERTICAL);
 
         useFixedValCheckBox.setText("Use fixed value addition");
+        useFixedValCheckBox.setFocusable(false);
         useFixedValCheckBox.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
                 useFixedValCheckBoxStateChanged(evt);
@@ -239,6 +240,7 @@ public class InitFrame extends javax.swing.JFrame {
             }
         });
         jTable1.setColumnSelectionAllowed(true);
+        jTable1.setFocusable(false);
         jTable1.getTableHeader().setReorderingAllowed(false);
         jScrollPane1.setViewportView(jTable1);
         jTable1.getColumnModel().getSelectionModel().setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
@@ -255,6 +257,29 @@ public class InitFrame extends javax.swing.JFrame {
             }
         });
 
+        predefinedButtonRed.setText("#FF0000");
+        predefinedButtonRed.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                predefinedButtonRedActionPerformed(evt);
+            }
+        });
+
+        jLabel13.setText("Predefined:");
+
+        predefinedButtonGreen.setText("#00FF00");
+        predefinedButtonGreen.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                predefinedButtonGreenActionPerformed(evt);
+            }
+        });
+
+        predefinedButtonBlue.setText("#0000FF");
+        predefinedButtonBlue.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                predefinedButtonBlueActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -267,76 +292,85 @@ public class InitFrame extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(chosenInitFolderTextField))
                     .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                .addComponent(jLabel4)
+                                .addGroup(layout.createSequentialGroup()
+                                    .addComponent(sfNoneRadioButton)
+                                    .addGap(18, 18, 18)
+                                    .addComponent(sfAVGRadioButton)
+                                    .addGap(18, 18, 18)
+                                    .addComponent(sfMINRadioButton))
+                                .addGroup(layout.createSequentialGroup()
+                                    .addComponent(csRGBRadioButton)
+                                    .addGap(18, 18, 18)
+                                    .addComponent(csLabRadioButton, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGap(18, 18, 18)
+                                    .addComponent(csLuvRadioButton))
+                                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 169, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                        .addComponent(jLabel9, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(jLabel10, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(jLabel11, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(greenTextField)
+                                        .addComponent(blueTextField, javax.swing.GroupLayout.Alignment.TRAILING)
+                                        .addGroup(layout.createSequentialGroup()
+                                            .addComponent(redTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addGap(0, 0, Short.MAX_VALUE))))
+                                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                                            .addComponent(jLabel12)
+                                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                            .addComponent(colorNameTextField))
+                                        .addComponent(jLabel8, javax.swing.GroupLayout.Alignment.LEADING))
+                                    .addGap(10, 10, 10)
+                                    .addComponent(addColorButton)))
+                            .addComponent(jLabel13))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 25, Short.MAX_VALUE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 6, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel3)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(wfNoneRadioButton)
+                                        .addGap(18, 18, 18)
+                                        .addComponent(wfReciRadioButton)
+                                        .addGap(18, 18, 18)
+                                        .addComponent(wfExpRadioButton))
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(jLabel5)
+                                        .addGap(18, 18, 18)
+                                        .addComponent(algorithmComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addComponent(useDiscardDistanceCheckBox)
+                                    .addComponent(useFixedValCheckBox)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(jLabel6)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(discardDistanceTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(jLabel7)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(maxDiscardDistanceLabel))))))
+                    .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel1)
                         .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jLabel4)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(sfNoneRadioButton)
-                                .addGap(18, 18, 18)
-                                .addComponent(sfAVGRadioButton)
-                                .addGap(18, 18, 18)
-                                .addComponent(sfMINRadioButton))
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(csRGBRadioButton)
-                                .addGap(18, 18, 18)
-                                .addComponent(csLabRadioButton, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addComponent(csLuvRadioButton))
-                            .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 169, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                    .addComponent(jLabel9, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(jLabel10, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(jLabel11, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(redTextField)
-                                    .addComponent(greenTextField)
-                                    .addComponent(blueTextField, javax.swing.GroupLayout.Alignment.TRAILING)))
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                                        .addComponent(jLabel12)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(colorNameTextField))
-                                    .addComponent(jLabel8, javax.swing.GroupLayout.Alignment.LEADING))
-                                .addGap(10, 10, 10)
-                                .addComponent(addColorButton)))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-                                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                    .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 6, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addComponent(jLabel3)
-                                        .addGroup(layout.createSequentialGroup()
-                                            .addComponent(wfNoneRadioButton)
-                                            .addGap(18, 18, 18)
-                                            .addComponent(wfReciRadioButton)
-                                            .addGap(18, 18, 18)
-                                            .addComponent(wfExpRadioButton))
-                                        .addGroup(layout.createSequentialGroup()
-                                            .addComponent(jLabel5)
-                                            .addGap(18, 18, 18)
-                                            .addComponent(algorithmComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                        .addComponent(useDiscardDistanceCheckBox)
-                                        .addComponent(useFixedValCheckBox)
-                                        .addGroup(layout.createSequentialGroup()
-                                            .addComponent(jLabel6)
-                                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                            .addComponent(discardDistanceTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                            .addComponent(jLabel7)
-                                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                            .addComponent(maxDiscardDistanceLabel)))))
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                .addComponent(autoStartCheckBox)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jButton2)))))
+                        .addComponent(predefinedButtonRed)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(predefinedButtonGreen)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(predefinedButtonBlue)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(autoStartCheckBox)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButton2)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -383,6 +417,17 @@ public class InitFrame extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                        .addComponent(discardDistanceTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(jLabel7)
+                                        .addComponent(maxDiscardDistanceLabel))
+                                    .addComponent(jLabel6))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(useFixedValCheckBox)
+                                .addGap(7, 7, 7)
+                                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 106, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(layout.createSequentialGroup()
                                 .addComponent(jLabel8)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -400,22 +445,16 @@ public class InitFrame extends javax.swing.JFrame {
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                     .addComponent(jLabel12)
                                     .addComponent(colorNameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(addColorButton)))
-                            .addGroup(layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                        .addComponent(discardDistanceTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addComponent(jLabel7)
-                                        .addComponent(maxDiscardDistanceLabel))
-                                    .addComponent(jLabel6))
+                                    .addComponent(addColorButton))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(useFixedValCheckBox)
-                                .addGap(7, 7, 7)
-                                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 106, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                                .addComponent(jLabel13))))
                     .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 164, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 21, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton2)
+                    .addComponent(predefinedButtonRed)
+                    .addComponent(predefinedButtonGreen)
+                    .addComponent(predefinedButtonBlue)
+                    .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, 24, Short.MAX_VALUE)
                     .addComponent(autoStartCheckBox))
                 .addContainerGap())
         );
@@ -450,6 +489,15 @@ public class InitFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_algorithmComboBoxActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        if (chosenInitFolderTextField.getText().length() == 0) {
+            JOptionPane.showMessageDialog(null, "Choose location of data!\n", "DomColorClassification: Start classification", JOptionPane.INFORMATION_MESSAGE);
+            return;
+        }
+        
+        if (createdCenters.isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Create classification centers!\n", "DomColorClassification: Start classification", JOptionPane.INFORMATION_MESSAGE);
+            return;
+        }
         File initFolder = new File(chosenInitFolderTextField.getText());
         CustColor.ColorSpace space = CustColor.ColorSpace.RGB;
         SmoothingFunction sf = getSmoothingFunction();
@@ -513,10 +561,15 @@ public class InitFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_redTextFieldActionPerformed
 
     private void addColorButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addColorButtonActionPerformed
-        float[] values = new float[]{Float.parseFloat(redTextField.getText()),
-            Float.parseFloat(greenTextField.getText()), Float.parseFloat(blueTextField.getText())};
-        createdCenters.put(colorNameTextField.getText(), values);
-        jTable1.setModel(new GravCenterTableModel(createdCenters));
+        try {
+            float[] values = new float[]{Float.parseFloat(redTextField.getText()),
+                Float.parseFloat(greenTextField.getText()), Float.parseFloat(blueTextField.getText())};
+            createdCenters.put(colorNameTextField.getText(), values);
+            jTable1.setModel(new GravCenterTableModel(createdCenters));
+        } catch (NumberFormatException ex) {
+            JOptionPane.showMessageDialog(null, "Error reading some of the input values!\n", "DomColorClassification: Create gravity center", JOptionPane.INFORMATION_MESSAGE);
+        }
+
     }//GEN-LAST:event_addColorButtonActionPerformed
 
     private void useFixedValCheckBoxStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_useFixedValCheckBoxStateChanged
@@ -532,6 +585,21 @@ public class InitFrame extends javax.swing.JFrame {
             cc.setEnabled(flag);
         }
     }//GEN-LAST:event_useDiscardDistanceCheckBoxActionPerformed
+
+    private void predefinedButtonRedActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_predefinedButtonRedActionPerformed
+        createdCenters.put("Red", new float[]{255, 0, 0});
+        jTable1.setModel(new GravCenterTableModel(createdCenters));
+    }//GEN-LAST:event_predefinedButtonRedActionPerformed
+
+    private void predefinedButtonGreenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_predefinedButtonGreenActionPerformed
+        createdCenters.put("Green", new float[]{0, 255, 0});
+        jTable1.setModel(new GravCenterTableModel(createdCenters));
+    }//GEN-LAST:event_predefinedButtonGreenActionPerformed
+
+    private void predefinedButtonBlueActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_predefinedButtonBlueActionPerformed
+        createdCenters.put("Blue", new float[]{0, 0, 255});
+        jTable1.setModel(new GravCenterTableModel(createdCenters));
+    }//GEN-LAST:event_predefinedButtonBlueActionPerformed
 
     /**
      * @param args the command line arguments
@@ -586,6 +654,7 @@ public class InitFrame extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
+    private javax.swing.JLabel jLabel13;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -598,6 +667,9 @@ public class InitFrame extends javax.swing.JFrame {
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JTable jTable1;
     private javax.swing.JLabel maxDiscardDistanceLabel;
+    private javax.swing.JButton predefinedButtonBlue;
+    private javax.swing.JButton predefinedButtonGreen;
+    private javax.swing.JButton predefinedButtonRed;
     private javax.swing.JTextField redTextField;
     private javax.swing.JRadioButton sfAVGRadioButton;
     private javax.swing.JRadioButton sfMINRadioButton;
