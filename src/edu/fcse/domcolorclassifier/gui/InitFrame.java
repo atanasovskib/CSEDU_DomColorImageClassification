@@ -502,7 +502,7 @@ public class InitFrame extends javax.swing.JFrame {
         File initFolder = new File(chosenInitFolderTextField.getText());
         CustColor.ColorSpace space = CustColor.ColorSpace.RGB;
         SmoothingFunction sf = getSmoothingFunction();
-       
+
         WeightFunction wf = getWeightFunction();
         AlgorithmToApply algo = getAlgorithm();
         DistanceFunction dist = new EuclideanDistanceFunction();
@@ -516,7 +516,8 @@ public class InitFrame extends javax.swing.JFrame {
             centers.add(new CustColor(name, createdCenters.get(name)));
         }
         try {
-            ClassificationFrame cf = new ClassificationFrame(initFolder, space, centers, algo, meth);
+
+            ClassificationFrame cf = new ClassificationFrame(initFolder, space, centers, algo, meth, autoStartCheckBox.isSelected());
             cf.setVisible(true);
         } catch (IOException ex) {
             Logger.getLogger(InitFrame.class.getName()).log(Level.SEVERE, null, ex);

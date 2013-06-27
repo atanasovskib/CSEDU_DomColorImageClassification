@@ -39,7 +39,7 @@ public class ClassificationFrame extends javax.swing.JFrame {
     private FrameSizeChangeListener sizeListener;
     private LabelSizeChangeListener labelList;
 
-    public ClassificationFrame(File initFolder, CustColor.ColorSpace space, List<CustColor> centers, AlgorithmToApply algo, MethodToApply meth) throws IOException {
+    public ClassificationFrame(File initFolder, CustColor.ColorSpace space, List<CustColor> centers, AlgorithmToApply algo, MethodToApply meth, boolean autostart) throws IOException {
         initComponents();
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         double maxWid = screenSize.getWidth() / 2;
@@ -57,6 +57,7 @@ public class ClassificationFrame extends javax.swing.JFrame {
 
         this.method = meth;
         this.algor = algo;
+        this.startMenuItemActionPerformed(null);
     }
 
     public void notifyVizuStarted() {
