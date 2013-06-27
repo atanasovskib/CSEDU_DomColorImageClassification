@@ -501,8 +501,8 @@ public class InitFrame extends javax.swing.JFrame {
         }
         File initFolder = new File(chosenInitFolderTextField.getText());
         CustColor.ColorSpace space = CustColor.ColorSpace.RGB;
-        SmoothingFunction sf = getSmoothingFunction();
-       
+        SmoothingFunction sf;// = getSmoothingFunction();
+        sf = new EnhanceGreenSmoothingFunction(5);
         WeightFunction wf = getWeightFunction();
         AlgorithmToApply algo = getAlgorithm();
         DistanceFunction dist = new EuclideanDistanceFunction();
@@ -511,7 +511,7 @@ public class InitFrame extends javax.swing.JFrame {
             discardDist = Double.parseDouble(discardDistanceTextField.getText());
         }
         MethodToApply meth = new MethodToApply(sf, space, wf, dist, discardDist, useFixedValCheckBox.isSelected());
-        List<CustColor> centers = new ArrayList<>(createdCenters.size());
+        List<CustColor> centers = new ArrayList<CustColor>(createdCenters.size());
         for (String name : createdCenters.keySet()) {
             centers.add(new CustColor(name, createdCenters.get(name)));
         }
