@@ -114,7 +114,7 @@ public class InitFrame extends javax.swing.JFrame {
         });
 
         jLabel1.setLabelFor(cChooseInitFolderButton);
-        jLabel1.setText("Choose the forlder with the images:");
+        jLabel1.setText("Choose the folder with the images:");
 
         colorSpaceButtonGroup.add(csRGBRadioButton);
         csRGBRadioButton.setSelected(true);
@@ -516,7 +516,6 @@ public class InitFrame extends javax.swing.JFrame {
             centers.add(new CustColor(name, createdCenters.get(name)));
         }
         try {
-
             ClassificationFrame cf = new ClassificationFrame(initFolder, space, centers, algo, meth, autoStartCheckBox.isSelected());
             cf.setVisible(true);
         } catch (IOException ex) {

@@ -29,7 +29,7 @@ import javax.imageio.ImageIO;
  */
 public class AddToMultipleCentersAlgorithmVIZ implements AlgorithmToApplyWithVisualization {
 
-    private final int THRESHHOLD = 200;
+    private final int THRESHHOLD = 300;
 
     @Override
     public ClassificationResultWithVisualization classifyImage(File fileToClassify, MethodToApply method, List<CustColor> gravityCenters) throws IOException {
@@ -81,7 +81,7 @@ public class AddToMultipleCentersAlgorithmVIZ implements AlgorithmToApplyWithVis
                     maxAppearence = colorAppearance.get(cc);
                 }
             }
-            ClassificationResultWithVisualization rez = new ClassificationResultWithVisualization(fileToClassify.getName(), max, magic, width, height);
+            ClassificationResultWithVisualization rez = new ClassificationResultWithVisualization(fileToClassify.getName(), max, magic, colorAppearance, width, height);
             return rez;
         } catch (CMMException ex) {
             throw new IOException("Could not read file: " + fileToClassify);

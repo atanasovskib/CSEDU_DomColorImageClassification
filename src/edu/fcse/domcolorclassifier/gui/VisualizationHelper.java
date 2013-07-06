@@ -93,8 +93,9 @@ public class VisualizationHelper {
         try {
             ClassificationResultWithVisualization rezu = algo.classifyImage(new File(originalFilename),
                     method, gravCenters);
-            stringRez += "<b>Classified as:</b> " + rezu.getClassifiedAs().getName() + "<br/>";
-            stringRez += "<b>Size: </b>" + rezu.getWidth() + ":" + rezu.getHeight();
+            stringRez += "<b>Classified as:</b> " + rezu.getClassifiedAs().getName();
+            stringRez += "<br/><b>Size: </b>" + rezu.getWidth() + ":" + rezu.getHeight();
+            stringRez += "<br/><b>Values: </b>" + rezu.getCenterValuesAsString().replaceAll("\n", "<br/>") + "<br/></html>";
             File origFile = new File(originalFilename);
 
             originalFile = ImageIO.read(origFile);
@@ -135,17 +136,36 @@ public class VisualizationHelper {
                             delitel = 0;
                         }
                     }
-
-                    values[0] = alreadyThereColor.getRed() + (float) (values[0] / 1.75 * delitel);
+                    float toAddR;
+                    float toAddG;
+                    float toAddB;
+                    if (algo instanceof AddToMultipleCentersAlgorithmVIZ) {
+                        float rdist = values[0] - alreadyThereColor.getRed();
+                        float gdist = values[1] - alreadyThereColor.getGreen();
+                        float bdist = values[2] - alreadyThereColor.getBlue();
+                        double colorDist = Math.sqrt(rdist * rdist + gdist * gdist + bdist * bdist);
+                        if (colorDist == 0) {
+                            colorDist = 1;
+                        }
+                        colorDist/=100;
+                        toAddR = (float) (values[0] / colorDist);
+                        toAddG = (float) (values[1] / colorDist);
+                        toAddB = (float) (values[2] / colorDist);
+                    } else {
+                        toAddR = (float) (values[0] / 1.75 * delitel);
+                        toAddG = (float) (values[1] / 1.75 * delitel);
+                        toAddB = (float) (values[2] / 1.75 * delitel);
+                    }
+                    values[0] = alreadyThereColor.getRed() + toAddR;
                     if (values[0] > 255) {
                         values[0] = 255;
                     }
 
-                    values[1] = alreadyThereColor.getGreen() + (float) (values[1] / 1.75 * delitel);
+                    values[1] = alreadyThereColor.getGreen() + toAddG;
                     if (values[1] > 255) {
                         values[1] = 255;
                     }
-                    values[2] = alreadyThereColor.getBlue() + (float) (values[2] / 1.75 * delitel);
+                    values[2] = alreadyThereColor.getBlue() + toAddB;
                     if (values[2] > 255) {
                         values[2] = 255;
                     }

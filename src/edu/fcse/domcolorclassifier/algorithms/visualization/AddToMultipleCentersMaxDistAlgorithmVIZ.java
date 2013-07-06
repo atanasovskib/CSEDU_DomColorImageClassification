@@ -75,7 +75,7 @@ public class AddToMultipleCentersMaxDistAlgorithmVIZ implements AlgorithmToApply
                     maxAppearence = colorAppearance.get(cc);
                 }
             }
-            ClassificationResultWithVisualization rez = new ClassificationResultWithVisualization(fileToClassify.getName(), max, magic, width, height);
+            ClassificationResultWithVisualization rez = new ClassificationResultWithVisualization(fileToClassify.getName(), max, magic, colorAppearance,width, height);
             return rez;
         } catch (CMMException ex) {
             throw new IOException("Could not read file: " + fileToClassify);

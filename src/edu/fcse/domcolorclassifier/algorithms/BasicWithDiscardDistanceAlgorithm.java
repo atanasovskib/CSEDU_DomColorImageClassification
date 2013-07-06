@@ -14,6 +14,7 @@ import edu.fcse.domcolorclassifier.functions.weight.WeightFunction;
 import java.awt.color.CMMException;
 import java.io.File;
 import java.io.IOException;
+import java.util.Map;
 import javax.imageio.ImageIO;
 
 /**
@@ -29,10 +30,13 @@ public class BasicWithDiscardDistanceAlgorithm implements AlgorithmToApply {
 
     @Override
     public ClassificationResult classifyImage(File fileToClassify, MethodToApply method, List<CustColor> gravityCenters) throws IOException {
-
+        Map<CustColor, Integer> discards = new HashMap<>();
+        Map<CustColor, Integer> totals = new HashMap<>();
         HashMap<CustColor, Double> colorAppearence = new HashMap<>();
         for (CustColor cc : gravityCenters) {
             colorAppearence.put(cc, 0.0);
+            discards.put(cc, 0);
+            totals.put(cc, 0);
         }
         try {
             BufferedImage imageToClassify = ImageIO.read(fileToClassify);
@@ -64,6 +68,7 @@ public class BasicWithDiscardDistanceAlgorithm implements AlgorithmToApply {
                     }
                     if (min != null) {
                         double R;
+                        totals.put(min, totals.get(min) + 1);
                         if (minDistance <= method.getDiscardDistance()) {
                             if (method.getFixedValue()) {
                                 R = 1;
@@ -74,6 +79,8 @@ public class BasicWithDiscardDistanceAlgorithm implements AlgorithmToApply {
                             weight *= R;
                             colorAppearence.put(min, colorAppearence.get(min)
                                     + weight);
+                        } else {
+                            discards.put(min, discards.get(min) + 1);
                         }
                     }
 
@@ -90,6 +97,8 @@ public class BasicWithDiscardDistanceAlgorithm implements AlgorithmToApply {
                 }
             }
             ClassificationResult result = new ClassificationResult(fileToClassify.getAbsolutePath(), max, colorAppearence, width, height);
+            System.err.println("Discards: " + discards);
+            System.out.println("Totals: " + totals);
             return result;
         } catch (CMMException ex) {
             throw new IOException("Could not read file: " + fileToClassify);
