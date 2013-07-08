@@ -136,36 +136,17 @@ public class VisualizationHelper {
                             delitel = 0;
                         }
                     }
-                    float toAddR;
-                    float toAddG;
-                    float toAddB;
-                    if (algo instanceof AddToMultipleCentersAlgorithmVIZ) {
-                        float rdist = values[0] - alreadyThereColor.getRed();
-                        float gdist = values[1] - alreadyThereColor.getGreen();
-                        float bdist = values[2] - alreadyThereColor.getBlue();
-                        double colorDist = Math.sqrt(rdist * rdist + gdist * gdist + bdist * bdist);
-                        if (colorDist == 0) {
-                            colorDist = 1;
-                        }
-                        colorDist/=100;
-                        toAddR = (float) (values[0] / colorDist);
-                        toAddG = (float) (values[1] / colorDist);
-                        toAddB = (float) (values[2] / colorDist);
-                    } else {
-                        toAddR = (float) (values[0] / 1.75 * delitel);
-                        toAddG = (float) (values[1] / 1.75 * delitel);
-                        toAddB = (float) (values[2] / 1.75 * delitel);
-                    }
-                    values[0] = alreadyThereColor.getRed() + toAddR;
+
+                    values[0] = alreadyThereColor.getRed() + (float) (values[0] / 1.75 * delitel);
                     if (values[0] > 255) {
                         values[0] = 255;
                     }
 
-                    values[1] = alreadyThereColor.getGreen() + toAddG;
+                    values[1] = alreadyThereColor.getGreen() + (float) (values[1] / 1.75 * delitel);
                     if (values[1] > 255) {
                         values[1] = 255;
                     }
-                    values[2] = alreadyThereColor.getBlue() + toAddB;
+                    values[2] = alreadyThereColor.getBlue() + (float) (values[2] / 1.75 * delitel);
                     if (values[2] > 255) {
                         values[2] = 255;
                     }
