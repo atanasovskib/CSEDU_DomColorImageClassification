@@ -1,4 +1,4 @@
-CSEDU_ColorClassification by Blagoj Atanasovski
+CSEDU_DomColorClassification by Blagoj Atanasovski
 ===========================================
 
 Image Classification by Dominant Color
